@@ -43,13 +43,9 @@ class SendView(LoginRequiredMixin,CreateView):
     model = EmergencyContact
     fields = ['emergencyContactId','destinationGroupe','title','text','deadline','sendDate']
     success_url = 'Index/'
-<<<<<<< HEAD
-    
-class EmployeeListView(ListView):
-=======
 
 class EmployeeListView(LoginRequiredMixin,ListView):
->>>>>>> refs/remotes/origin/new
+
     template_name = "SafetyConf/SafetyConf_EmployeeList.html"
     model = Employee 
 
