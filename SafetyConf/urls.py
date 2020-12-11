@@ -3,8 +3,8 @@ from .views import IndexView,AddView,EmergencyListView,EmployeeListView,SendView
 
 app_name='SafetyConf'
 urlpatterns = [
-    path('',IndexView.as_view(),name='Index'),
-    path('add',AddView.as_view(),name='Add'),
+    path('Index/',IndexView.as_view(),name='Index'),
+    path('Add',AddView.as_view(),name='Add'),
     path('EmergencyList',EmergencyListView.as_view(),name='EmergencyList'),
     path('EmployeeList',EmployeeListView.as_view(),name='EmployeeList'),
     path('Send',SendView.as_view(),name='Send'),
