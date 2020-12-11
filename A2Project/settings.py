@@ -126,10 +126,9 @@ STATICFILES_DIRS = (
         os.path.join(BASE_DIR, 'static'),
     )
 
-#ROOT_URLCONF='SafetyConf.urls'
-LOGIN_URL='SafetyConf:login'     # ログイン
-LOGOUT_URL='SafetyConf:logout'   # ログアウト
-LOGIN_REDIRECT_URL='SafetyConf:Index'      # ログイン
-LOGOUT_REDIRECT_URL='SafetyConf:login'    # ログアウト
+LOGIN_URL='SafetyConf:login'
+LOGOUT_URL='SafetyConf:logout'
+LOGIN_REDIRECT_URL='SafetyConf:Index'
+LOGOUT_REDIRECT_URL='SafetyConf:login'
 
 
