@@ -126,9 +126,14 @@ STATICFILES_DIRS = (
         os.path.join(BASE_DIR, 'static'),
     )
 
+LOGIN_URL='SafetyConf:login'
+LOGOUT_URL='SafetyConf:logout'
+LOGIN_REDIRECT_URL='SafetyConf:Index'
+LOGOUT_REDIRECT_URL='SafetyConf:login'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = 'localhost'
 EMAIL_POST = 25
 EMAIL_HOST_USER = 'unko'
 EMAIL_HOST_PASSWARD = '12345678'
 EMAIL_USE_TLS = True
+

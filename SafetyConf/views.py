@@ -4,17 +4,17 @@ from django.views.generic.edit import CreateView
 from django.views.generic import ListView
 from .models import Employee,EmergencyContact
 from django.template.backends.django import Template
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Max
 from .forms import EmployeeIdForm, EmployeeForm,EmegencyContactForm
 from django.core.mail import send_mail
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 
-
-class IndexView(TemplateView):
+class IndexView(LoginRequiredMixin,TemplateView):
     template_name = "SafetyConf/SafetyConf_Index.html"
     
-class AddView(CreateView):
+class AddView(LoginRequiredMixin,TemplateView):
     template_name = "SafetyConf/SafetyConf_Add.html"
     model = Employee
     fields = ('employeeId', 'name', 'mailaddress', 'subMailaddress', 'group')
@@ -26,7 +26,7 @@ class AddView(CreateView):
             minid=0
         return {'employeeId':minid+1}
     
-class EmergencyListView(ListView):
+class EmergencyListView(LoginRequiredMixin,ListView):
     template_name = "SafetyConf/SafetyConf_EmergencyList.html" 
     model = EmergencyContact
 
@@ -38,14 +38,13 @@ class EmergencyListView(ListView):
         context = super().get_context_data(**kwargs)
         return context
     
-class SendView(CreateView):
+class SendView(LoginRequiredMixin,CreateView):
     template_name = "SafetyConf/SafetyConf_Send.html"
     model = EmergencyContact
     fields = ['emergencyContactId','destinationGroupe','title','text','deadline','sendDate']
     success_url = 'Index/'
 
-    
-class EmployeeListView(ListView):
+class EmployeeListView(LoginRequiredMixin,ListView):
     template_name = "SafetyConf/SafetyConf_EmployeeList.html"
     model = Employee 
 
@@ -57,10 +56,10 @@ class EmployeeListView(ListView):
         context = super().get_context_data(**kwargs)
         return context
     
-class TestSendView(TemplateView):
+class TestSendView(LoginRequiredMixin,TemplateView):
     template_name = "SafetyConf/SafetyConf_TestSend.html"
-    
-class ResultView(TemplateView):
+
+class ResultView(LoginRequiredMixin,TemplateView):
     template_name = "SafetyConf/SafetyConf_Result.html"
-    
+
 # Create your views here.
