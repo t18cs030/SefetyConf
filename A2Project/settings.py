@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
-from django.conf.global_settings import LOGIN_REDIRECT_URL
+from django.conf.global_settings import LOGIN_REDIRECT_URL, EMAIL_BACKEND
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -130,5 +130,10 @@ LOGIN_URL='SafetyConf:login'
 LOGOUT_URL='SafetyConf:logout'
 LOGIN_REDIRECT_URL='SafetyConf:Index'
 LOGOUT_REDIRECT_URL='SafetyConf:login'
-
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = 'localhost'
+EMAIL_POST = 25
+EMAIL_HOST_USER = 'unko'
+EMAIL_HOST_PASSWARD = '12345678'
+EMAIL_USE_TLS = True
 
