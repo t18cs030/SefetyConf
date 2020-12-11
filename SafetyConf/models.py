@@ -14,7 +14,7 @@ class Employee(models.Model):
     
     
 class EmergencyContact(models.Model):
-    emergencyContactId = models.IntegerField(max_length=10,null=False,unique=True)
+    emergencyContactId = models.IntegerField(null=False,unique=True)
     destinationGroupe = models.ForeignKey(Group,on_delete=models.CASCADE)
     title = models.CharField(max_length=30)
     text = models.TextField()
