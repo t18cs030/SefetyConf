@@ -1,5 +1,7 @@
 from django.urls import path
+from .views import IndexView
 
-app_name='SafeConf'
+app_name='SafetyConf'
 urlpatterns = [
+    path('',IndexView.as_view(),name='index')
 ]
