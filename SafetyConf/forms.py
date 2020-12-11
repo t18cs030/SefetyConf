@@ -13,3 +13,4 @@ class EmegencyContactForm(forms.ModelForm):
     class Meta:
         model = EmergencyContact
         fields = ['emergencyContactId','destinationGroupe','title','text','deadline','sendDate']
+    
