@@ -11,3 +11,5 @@ urlpatterns = [
     path('TestSend',TestSendView.as_view(),name='TestSend'),
     path('Result',ResultView.as_view(),name='Result')
 ]
+
+

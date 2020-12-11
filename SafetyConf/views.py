@@ -23,4 +23,5 @@ class TestSendView(TemplateView):
     
 class ResultView(TemplateView):
     template_name = "SafetyConf/SafetyConf_Result.html"
+    
 # Create your views here.
