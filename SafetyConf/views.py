@@ -43,7 +43,6 @@ class SendView(CreateView):
     model = EmergencyContact
     fields = ['emergencyContactId','destinationGroupe','title','text','deadline','sendDate']
     success_url = 'Index/'
-
     
 class EmployeeListView(ListView):
     template_name = "SafetyConf/SafetyConf_EmployeeList.html"
