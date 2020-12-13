@@ -20,7 +20,7 @@ class Employee(models.Model):
     
 class EmergencyContact(models.Model):
     emergencyContactId = models.IntegerField(null=False,unique=True)
-    destinationGroupe = models.ForeignKey(Group,on_delete=models.CASCADE)
+    destinationGroup = models.ForeignKey(Group,on_delete=models.CASCADE)
     title = models.CharField(max_length=30)
     text = models.TextField()
     deadline = models.DateTimeField()
@@ -29,8 +29,13 @@ class EmergencyContact(models.Model):
     def __str__(self):
         return str(self.emergencyContactId)+" "+self.title
     
+
+    
 class Answer(models.Model):
     employee = models.OneToOneField(Employee,on_delete=models.CASCADE)
+    answer1 = models.CharField(max_length=30)
+    answer2 = models.CharField(max_length=30)
     sendDate = models.DateTimeField()
     
+ 
     
