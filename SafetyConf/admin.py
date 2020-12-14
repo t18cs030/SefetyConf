@@ -4,5 +4,3 @@ admin.site.register(Group)
 admin.site.register(Employee)
 admin.site.register(EmergencyContact)
 admin.site.register(Answer)
-
-# Register your models here.
