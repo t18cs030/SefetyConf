@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %} 従業員リスト{% endblock %}
+
+{% block main %}
+<table class="table">
+	<thead class="thead-dark">
+		<tr>
+			<th>id</th>
+			<th>名前</th>
+			<th>メールアドレス</th>
+			<th>subメールアドレス</th>
+			<th>グループ</th>
+		</tr>
+	</thead>
+	<tbody>
+{% for Employee in object_list%}
+<tr>
+<td scope="row">{{ Employee.employeeId }}</td>
+<td>{{ Employee.name }}</td>
+<td>{{ Employee.mailaddress }}</td>
+<td>{{ Employee.subMailaddress }}</td>
+<td>{{ Employee.group }}</td>
+</tr>
+{% endfor %}
+</table>
+
+
+<ul>
+<li><a href="{% url 'SafetyConf:Index' %}">メインメニュー</a></li>
+</ul>
+{% endblock %}
+
