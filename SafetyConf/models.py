@@ -1,5 +1,6 @@
 from django.db import models
 from enum import unique
+from django.utils import timezone
 
 class Group(models.Model):
     groupId = models.IntegerField(null=False,unique=True)
@@ -24,7 +25,7 @@ class EmergencyContact(models.Model):
     title = models.CharField(max_length=30)
     text = models.TextField()
     deadline = models.DateTimeField()
-    sendDate = models.DateTimeField()
+    sendDate = models.DateTimeField(default=timezone.now)
     
     def __str__(self):
         return str(self.emergencyContactId)+" "+self.title
@@ -35,7 +36,8 @@ class Answer(models.Model):
     employee = models.OneToOneField(Employee,on_delete=models.CASCADE)
     answer1 = models.CharField(max_length=30)
     answer2 = models.CharField(max_length=30)
-    sendDate = models.DateTimeField()
+    sendDate = models.DateTimeField(default=timezone.now)
+    message = models.TextField()
     
  
     

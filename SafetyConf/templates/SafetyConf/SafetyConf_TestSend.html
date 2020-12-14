@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %} Send {% endblock %}
+{% block title %} TestSend {% endblock %}
 
 {% block main %}
 <form action="{% url 'SafetyConf:TestSend' %}" method="post">
@@ -8,6 +8,6 @@
 <table>
 {{ form.as_table }}
 </table>
-<input type="submit"/>
+<input type="submit" value = "送信"/>
 </form>
 {% endblock %}
