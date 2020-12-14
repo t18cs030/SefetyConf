@@ -37,11 +37,6 @@ class EmergencyContact(models.Model):
     def __str__(self):
         return str(self.emergencyContactId)+" "+self.title
     
-
-    
-    def __str__(self):
-        return str(self.emergencyContactId)+" "+self.title
-    
 class Answer(models.Model):
     employee = models.OneToOneField(Employee,on_delete=models.CASCADE)
     answer1 = models.CharField(max_length=30)
