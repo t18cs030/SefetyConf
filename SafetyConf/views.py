@@ -47,9 +47,11 @@ class SendView(LoginRequiredMixin,CreateView):
         employees = Employee.objects.filter(group=group)
         from_email = settings.EMAIL_HOST_USER
         recipient_list = []
+        bcc = []
         for employee in employees:
-            recipient_list.append(employee.mailaddress) 
-        send_mail(subject,message, from_email, recipient_list)
+            bcc.append(employee.mailaddress) 
+        email = EmailMessage(subject,message, from_email, recipient_list, bcc)
+        email.send()
         return super(SendView,self).form_valid(form)
 
     def get_initial(self):
@@ -78,9 +80,11 @@ class TestSendView(LoginRequiredMixin,CreateView):
         employees = Employee.objects.filter(group=group)
         from_email = settings.EMAIL_HOST_USER
         recipient_list = []
+        bcc = []
         for em in employees:
-            recipient_list.append(em.mailaddress) 
-        send_mail(subject,message, from_email, recipient_list)
+            bcc.append(em.mailaddress) 
+        email = EmailMessage(subject,message, from_email, recipient_list)
+        email.send()
         return HttpResponseRedirect(reverse('SafetyConf:Index'))
     
     def get_initial(self):
@@ -109,9 +113,7 @@ class AnswerView(LoginRequiredMixin,CreateView):
             m = form3.data['message']
             form.instance.message = m
         return super(AnswerView,self).form_valid(form)
-    
-
-    
+        
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['choice'] = ChoiceForm()
