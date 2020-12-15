@@ -12,8 +12,14 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.conf import settings
+from django.template.loader import render_to_string
+import hashlib, zlib
+import pickle
+import urllib
+from urllib import parse as parse
+import base64
 
-
+MY_SECRET = "TeamAFK"
 
 class IndexView(LoginRequiredMixin,TemplateView):
     template_name = "SafetyConf/SafetyConf_Index.html"
@@ -42,16 +48,26 @@ class SendView(LoginRequiredMixin,CreateView):
     
     def form_valid(self, form):
         subject = self.request.POST.get('title')
-        message = self.request.POST.get('text')
         group = self.request.POST.get('destinationGroup')
         employees = Employee.objects.filter(group=group)
         from_email = settings.EMAIL_HOST_USER
-        recipient_list = []
-        bcc = []
+        print(type(self.request))
         for employee in employees:
-            bcc.append(employee.mailaddress) 
-        email = EmailMessage(subject,message, from_email, recipient_list, bcc)
-        email.send()
+            recipient_list = []
+            recipient_list.append(employee.mailaddress) 
+            data = [employee.employeeId,int(self.request.POST.get('emergencyContactId'))]
+            m,code = self.encode_data(data)
+            context = {
+                        "name":employee.name,
+                        "employeeId":employee.employeeId,
+                        "deadline":self.request.POST.get('deadline'),
+                        "text":self.request.POST.get('text'),
+                        "m":m,
+                        "code":code.decode(),
+                        }
+            message = render_to_string('SafetyConf/mails/main.txt', context)#self.request.POST.get('text')
+            email = EmailMessage(subject,message, from_email, recipient_list)
+            email.send()
         return super(SendView,self).form_valid(form)
 
     def get_initial(self):
@@ -60,12 +76,16 @@ class SendView(LoginRequiredMixin,CreateView):
             minid=0
         return {'emergencyContactId':minid+1}
     
+    def encode_data(self,data):
+        data.append(MY_SECRET)
+        text = base64.b64encode(zlib.compress(pickle.dumps(data, 0)))
+        m = hashlib.md5(text).hexdigest()[:12]
+        return m, text
+    
 class EmployeeListView(LoginRequiredMixin,ListView):
 
     template_name = "SafetyConf/SafetyConf_EmployeeList.html"
     model = Employee 
-    
-    
     
 class TestSendView(LoginRequiredMixin,CreateView):
     template_name = "SafetyConf/SafetyConf_TestSend.html"
@@ -93,7 +113,7 @@ class TestSendView(LoginRequiredMixin,CreateView):
             minid=0
         return {'emergencyContactId':minid+1}
     
-class AnswerView(LoginRequiredMixin,CreateView):
+class AnswerView(CreateView):
     template_name = "SafetyConf/SafetyConf_Answer.html"
     model = Answer
     form_class = AnswerForm 
@@ -115,10 +135,27 @@ class AnswerView(LoginRequiredMixin,CreateView):
         return super(AnswerView,self).form_valid(form)
         
     def get_context_data(self, **kwargs):
+        hash = self.kwargs.get("hash")
+        code = self.kwargs.get("code")
+        data = self.decode_data(hash,code)
         context = super().get_context_data(**kwargs)
         context['choice'] = ChoiceForm()
         context['message'] = MessageForm()
+        context["data"] = data
+        context["has"] = hash
+        context["cod"] = code
+        print(data)
         return context
+    
+    def decode_data(self, hash, enc):
+        m = hashlib.md5(enc.encode()).hexdigest()[:12]
+        if m != hash:
+            raise Exception("Bad hash!")
+        data = pickle.loads(zlib.decompress(base64.b64decode(enc.encode())))
+        if data[len(data)-1] != MY_SECRET:
+            raise Exception("Bad hash!")
+        del data[len(data)-1]
+        return data
     
 class ThanksView(TemplateView):
     template_name = "SafetyConf/SafetyConf_Thanks.html"    
