@@ -9,13 +9,6 @@ class Group(models.Model):
     def __str__(self):
           return self.name
 
-class Group(models.Model):
-    groupId = models.IntegerField(null=False,unique=True)
-    name = models.CharField(max_length=30)
-    
-    def __str__(self):
-        return self.name
-
 class Employee(models.Model):
     employeeId = models.IntegerField(null=False,unique=True)
     name = models.CharField(max_length=30)
@@ -33,11 +26,6 @@ class EmergencyContact(models.Model):
     text = models.TextField()
     deadline = models.DateTimeField()
     sendDate = models.DateTimeField(default=timezone.now)
-    
-    def __str__(self):
-        return str(self.emergencyContactId)+" "+self.title
-    
-
     
     def __str__(self):
         return str(self.emergencyContactId)+" "+self.title
