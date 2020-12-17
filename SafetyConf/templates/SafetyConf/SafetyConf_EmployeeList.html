@@ -20,9 +20,11 @@
 <td>{{ Employee.name }}</td>
 <td>{{ Employee.mailaddress }}</td>
 <td>{{ Employee.subMailaddress }}</td>
-{% for em in Employee.group.all %}
-<td>{{ em }}</td>
+<td>
+{% for group in Employee.group.all %}
+{{ group }}{% if forloop.last %}{% else %}，{% endif %}
 {% endfor %}
+</td>
 </tr>
 {% endfor %}
 </table>
