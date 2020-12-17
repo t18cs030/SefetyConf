@@ -69,46 +69,6 @@ class SendView(LoginRequiredMixin,CreateView):
         id = self.object.emergencyContactId
         print(id)
         return reverse_lazy('SafetyConf:send',kwargs={'id':id})
-    
-    
-def send(request,id):
-    emergencycontact = EmergencyContact.objects.get(emergencyContactId=id)
-    subject = emergencycontact.title
-    groups = emergencycontact.destinationGroup
-    employees = []
-    for groupe in groups.all() :
-        employees += Employee.objects.filter(group=groupe)
-
-    from_email = settings.EMAIL_HOST_USER
-    sent_list = []
-    for employee in employees:
-        recipient_list = []
-        if employee.mailaddress in sent_list:
-            continue
-        else:
-            sent_list.append(employee.mailaddress) 
-            print(sent_list)
-            recipient_list.append(employee.mailaddress) 
-            data = [employee.employeeId,int(id)]
-            m,code = encode_data(data)
-            context = {
-                        "name":employee.name,
-                        "employeeId":employee.employeeId,
-                        "deadline":emergencycontact.deadline,
-                        "text":emergencycontact.text,
-                        "m":m,
-                        "code":code.decode(),
-                        }
-            message = render_to_string('SafetyConf/mails/main.txt', context)#self.request.POST.get('text')
-            email = EmailMessage(subject,message, from_email, recipient_list)
-            email.send()
-    return HttpResponseRedirect(reverse('SafetyConf:Index'))
-
-def encode_data(data):
-    data.append(MY_SECRET)
-    text = base64.b64encode(zlib.compress(pickle.dumps(data, 0)))
-    m = hashlib.md5(text).hexdigest()[:12]
-    return m, text
 
 class EmployeeListView(LoginRequiredMixin,ListView):
 
@@ -182,9 +142,9 @@ class AnswerView(CreateView):
         return super(AnswerView,self).form_valid(form)
     
     def get_initial(self):
-        hash = self.kwargs.get("hash")
-        code = self.kwargs.get("code")
-        data = self.decode_data(hash,code)
+        hash = self.kwargs.get("h")
+        code = self.kwargs.get("c")
+        data = decode_data(hash,code)
         initial = super().get_initial()
         initial["employee"]=Employee.objects.get(employeeId=data[0])
         return initial
@@ -200,6 +160,53 @@ class AnswerView(CreateView):
         context["code"] = code
         return context
     
+    
+class ThanksView(TemplateView):
+    template_name = "SafetyConf/SafetyConf_Thanks.html"    
+
+class ResultView(ListView):
+    template_name = "SafetyConf/SafetyConf_Result.html"
+    model = Answer
+
+def send(request,id):
+    emergencycontact = EmergencyContact.objects.get(emergencyContactId=id)
+    subject = emergencycontact.title
+    groups = emergencycontact.destinationGroup
+    employees = []
+    for groupe in groups.all() :
+        employees += Employee.objects.filter(group=groupe)
+
+    from_email = settings.EMAIL_HOST_USER
+    sent_list = []
+    for employee in employees:
+        recipient_list = []
+        if employee.mailaddress in sent_list:
+            continue
+        else:
+            sent_list.append(employee.mailaddress) 
+            print(sent_list)
+            recipient_list.append(employee.mailaddress) 
+            data = [employee.employeeId,int(id)]
+            m,code = encode_data(data)
+            context = {
+                        "name":employee.name,
+                        "employeeId":employee.employeeId,
+                        "deadline":emergencycontact.deadline,
+                        "text":emergencycontact.text,
+                        "m":m,
+                        "code":code.decode(),
+                        }
+            message = render_to_string('SafetyConf/mails/main.txt', context)#self.request.POST.get('text')
+            email = EmailMessage(subject,message, from_email, recipient_list)
+            email.send()
+    return HttpResponseRedirect(reverse('SafetyConf:Index'))
+
+def encode_data(data):
+    data.append(MY_SECRET)
+    text = base64.b64encode(zlib.compress(pickle.dumps(data, 0)))
+    m = hashlib.md5(text).hexdigest()[:12]
+    return m, text    
+    
 def decode_data(hash, enc):
     m = hashlib.md5(enc.encode()).hexdigest()[:12]
     if m != hash:
@@ -209,12 +216,5 @@ def decode_data(hash, enc):
         raise Exception("Bad hash!")
     del data[len(data)-1]
     return data
-    
-class ThanksView(TemplateView):
-    template_name = "SafetyConf/SafetyConf_Thanks.html"    
-
-class ResultView(ListView):
-    template_name = "SafetyConf/SafetyConf_Result.html"
-    model = Answer
 # Create your views here.
     
