@@ -21,14 +21,14 @@ class Employee(models.Model):
     name = models.CharField(max_length=30)
     mailaddress = models.EmailField()
     subMailaddress = models.EmailField(null=True,blank=True)
-    group = models.ForeignKey(Group,on_delete=models.CASCADE)
+    group = models.ManyToManyField(Group)
     
     def __str__(self):
         return str(self.employeeId)+" "+self.name
     
 class EmergencyContact(models.Model):
     emergencyContactId = models.IntegerField(null=False,unique=True)
-    destinationGroup = models.ForeignKey(Group,on_delete=models.CASCADE)
+    destinationGroup = models.ManyToManyField(Group)
     title = models.CharField(max_length=30)
     text = models.TextField()
     deadline = models.DateTimeField()
@@ -36,6 +36,8 @@ class EmergencyContact(models.Model):
     
     def __str__(self):
         return str(self.emergencyContactId)+" "+self.title
+    
+
     
 class Answer(models.Model):
     employee = models.OneToOneField(Employee,on_delete=models.CASCADE)

@@ -20,7 +20,9 @@
 <td>{{ Employee.name }}</td>
 <td>{{ Employee.mailaddress }}</td>
 <td>{{ Employee.subMailaddress }}</td>
-<td>{{ Employee.group }}</td>
+{% for em in Employee.group.all %}
+<td>{{ em }}</td>
+{% endfor %}
 </tr>
 {% endfor %}
 </table>

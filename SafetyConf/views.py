@@ -18,6 +18,7 @@ import pickle
 import urllib
 from urllib import parse as parse
 import base64
+from django.db import transaction
 
 MY_SECRET = "TeamAFK"
 
@@ -44,30 +45,10 @@ class SendView(LoginRequiredMixin,CreateView):
     template_name = "SafetyConf/SafetyConf_Send.html"
     model = EmergencyContact
     form_class = EmergencyContactForm
-    success_url = 'Index/'
+    success_url = reverse_lazy('SafetyConf:send')
     
     def form_valid(self, form):
-        subject = self.request.POST.get('title')
-        group = self.request.POST.get('destinationGroup')
-        employees = Employee.objects.filter(group=group)
-        from_email = settings.EMAIL_HOST_USER
-        print(type(self.request))
-        for employee in employees:
-            recipient_list = []
-            recipient_list.append(employee.mailaddress) 
-            data = [employee.employeeId,int(self.request.POST.get('emergencyContactId'))]
-            m,code = self.encode_data(data)
-            context = {
-                        "name":employee.name,
-                        "employeeId":employee.employeeId,
-                        "deadline":self.request.POST.get('deadline'),
-                        "text":self.request.POST.get('text'),
-                        "m":m,
-                        "code":code.decode(),
-                        }
-            message = render_to_string('SafetyConf/mails/main.txt', context)#self.request.POST.get('text')
-            email = EmailMessage(subject,message, from_email, recipient_list)
-            email.send()
+        form.instance.save()
         return super(SendView,self).form_valid(form)
 
     def get_initial(self):
@@ -75,13 +56,60 @@ class SendView(LoginRequiredMixin,CreateView):
         if minid==None:
             minid=0
         return {'emergencyContactId':minid+1}
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        minid=EmergencyContact.objects.all().aggregate(Max('emergencyContactId'))['emergencyContactId__max']
+        if minid==None:
+            minid=0
+        context['id'] = minid+1
+        print(minid+1)
+        return context
     
-    def encode_data(self,data):
-        data.append(MY_SECRET)
-        text = base64.b64encode(zlib.compress(pickle.dumps(data, 0)))
-        m = hashlib.md5(text).hexdigest()[:12]
-        return m, text
+    def get_success_url(self):
+        id = self.object.emergencyContactId
+        print(id)
+        return reverse_lazy('SafetyConf:send',kwargs={'id':id})
     
+    
+def send(request,id):
+    emergencycontact = EmergencyContact.objects.get(emergencyContactId=id)
+    subject = emergencycontact.title
+    groups = emergencycontact.destinationGroup
+    employees = []
+    for groupe in groups.all() :
+        employees += Employee.objects.filter(group=groupe)
+
+    from_email = settings.EMAIL_HOST_USER
+    sent_list = []
+    for employee in employees:
+        recipient_list = []
+        if employee.mailaddress in sent_list:
+            continue
+        else:
+            sent_list.append(employee.mailaddress) 
+            print(sent_list)
+            recipient_list.append(employee.mailaddress) 
+            data = [employee.employeeId,int(id)]
+            m,code = encode_data(data)
+            context = {
+                        "name":employee.name,
+                        "employeeId":employee.employeeId,
+                        "deadline":emergencycontact.deadline,
+                        "text":emergencycontact.text,
+                        "m":m,
+                        "code":code.decode(),
+                        }
+            message = render_to_string('SafetyConf/mails/main.txt', context)#self.request.POST.get('text')
+            email = EmailMessage(subject,message, from_email, recipient_list)
+            email.send()
+    return HttpResponseRedirect(reverse('SafetyConf:Index'))
+
+def encode_data(data):
+    data.append(MY_SECRET)
+    text = base64.b64encode(zlib.compress(pickle.dumps(data, 0)))
+    m = hashlib.md5(text).hexdigest()[:12]
+    return m, text
+
 class EmployeeListView(LoginRequiredMixin,ListView):
 
     template_name = "SafetyConf/SafetyConf_EmployeeList.html"
@@ -93,25 +121,44 @@ class TestSendView(LoginRequiredMixin,CreateView):
     form_class = EmergencyContactForm
     success_url = 'Index/'
     
-    def post(self, request, *args, **kwargs):
-        subject = self.request.POST.get('title')
-        message = self.request.POST.get('text')
-        group = self.request.POST.get('destinationGroup')
-        employees = Employee.objects.filter(group=group)
-        from_email = settings.EMAIL_HOST_USER
-        recipient_list = []
-        bcc = []
-        for em in employees:
-            bcc.append(em.mailaddress) 
-        email = EmailMessage(subject,message, from_email, recipient_list)
-        email.send()
-        return HttpResponseRedirect(reverse('SafetyConf:Index'))
-    
     def get_initial(self):
         minid=EmergencyContact.objects.all().aggregate(Max('emergencyContactId'))['emergencyContactId__max']
         if minid==None:
             minid=0
         return {'emergencyContactId':minid+1}
+    def get_success_url(self):
+        id = self.request.POST.get('emergencyContactId')
+        subject = self.request.POST.get('title')
+        message = self.request.POST.get('text')
+        groups = self.object.destinationGroup
+        print(groups.all())
+        employees = []
+        for groupe in groups.all() :
+            employees += Employee.objects.filter(group=groupe)
+        from_email = settings.EMAIL_HOST_USER
+        sent_list = []
+        for employee in employees:
+            recipient_list = []
+            if employee.mailaddress in sent_list:
+                continue
+            else:
+                sent_list.append(employee.mailaddress) 
+            
+                recipient_list.append(employee.mailaddress) 
+                data = [employee.employeeId,int(id)]
+                m,code = encode_data(data)
+                context = {
+                        "name":employee.name,
+                        "employeeId":employee.employeeId,
+                        "deadline":self.object.deadline,
+                        "text":self.object.text,
+                        "m":m,
+                        "code":code.decode(),
+                        }
+            message = render_to_string('SafetyConf/mails/main.txt', context)#self.request.POST.get('text')
+            email = EmailMessage(subject,message, from_email, recipient_list)
+            email.send()
+        return reverse_lazy('SafetyConf:Index')
     
 class AnswerView(CreateView):
     template_name = "SafetyConf/SafetyConf_Answer.html"
@@ -135,27 +182,25 @@ class AnswerView(CreateView):
         return super(AnswerView,self).form_valid(form)
         
     def get_context_data(self, **kwargs):
-        hash = self.kwargs.get("hash")
-        code = self.kwargs.get("code")
-        data = self.decode_data(hash,code)
+        hash = self.kwargs.get("h")
+        code = self.kwargs.get("c")
+        data = decode_data(hash,code)
         context = super().get_context_data(**kwargs)
         context['choice'] = ChoiceForm()
         context['message'] = MessageForm()
-        context["data"] = data
-        context["has"] = hash
-        context["cod"] = code
-        print(data)
+        context["hash"] = hash
+        context["code"] = code
         return context
     
-    def decode_data(self, hash, enc):
-        m = hashlib.md5(enc.encode()).hexdigest()[:12]
-        if m != hash:
-            raise Exception("Bad hash!")
-        data = pickle.loads(zlib.decompress(base64.b64decode(enc.encode())))
-        if data[len(data)-1] != MY_SECRET:
-            raise Exception("Bad hash!")
-        del data[len(data)-1]
-        return data
+def decode_data(hash, enc):
+    m = hashlib.md5(enc.encode()).hexdigest()[:12]
+    if m != hash:
+       raise Exception("Bad hash!")
+    data = pickle.loads(zlib.decompress(base64.b64decode(enc.encode())))
+    if data[len(data)-1] != MY_SECRET:
+        raise Exception("Bad hash!")
+    del data[len(data)-1]
+    return data
     
 class ThanksView(TemplateView):
     template_name = "SafetyConf/SafetyConf_Thanks.html"    

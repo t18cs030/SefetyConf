@@ -2,7 +2,7 @@
 
 {% block title %} Answer {% endblock %}
 {% block main %}
-<form action="{% url 'SafetyConf:Answer' hash="hash" code="code" %}" method="post">
+<form action="{% url 'SafetyConf:Answer' hash code %}" method="post">
 {% csrf_token %}
 <form>
 <p>
