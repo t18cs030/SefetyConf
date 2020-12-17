@@ -21,7 +21,7 @@ class Employee(models.Model):
     name = models.CharField(max_length=30)
     mailaddress = models.EmailField()
     subMailaddress = models.EmailField(null=True,blank=True)
-    group = models.ForeignKey(Group,on_delete=models.CASCADE)
+    group = models.ManyToManyField(Group)
     
     def __str__(self):
         return str(self.employeeId)+" "+self.name

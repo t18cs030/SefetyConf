@@ -52,7 +52,12 @@ class SendView(LoginRequiredMixin,CreateView):
         employees = Employee.objects.filter(group=group)
         from_email = settings.EMAIL_HOST_USER
         print(type(self.request))
+        sentList=[]
         for employee in employees:
+            if employee.mailaddress in sentList:
+                continue
+            else:
+                sentList.append(employee.mailaddress)
             recipient_list = []
             recipient_list.append(employee.mailaddress) 
             data = [employee.employeeId,int(self.request.POST.get('emergencyContactId'))]
@@ -119,8 +124,8 @@ class AnswerView(CreateView):
     form_class = AnswerForm 
     form_class2 = ChoiceForm
     form_class3 = MessageForm
-    success_url = 'Thanks'
-    
+    success_url = '../../Thanks'
+        
     def form_valid(self, form):
         form2 = self.form_class2(self.request.POST)
         form3 = self.form_class3(self.request.POST)
@@ -133,6 +138,14 @@ class AnswerView(CreateView):
             m = form3.data['message']
             form.instance.message = m
         return super(AnswerView,self).form_valid(form)
+    
+    def get_initial(self):
+        hash = self.kwargs.get("hash")
+        code = self.kwargs.get("code")
+        data = self.decode_data(hash,code)
+        initial = super().get_initial()
+        initial["employee"]=Employee.objects.get(employeeId=data[0])
+        return initial
         
     def get_context_data(self, **kwargs):
         hash = self.kwargs.get("hash")
@@ -141,9 +154,10 @@ class AnswerView(CreateView):
         context = super().get_context_data(**kwargs)
         context['choice'] = ChoiceForm()
         context['message'] = MessageForm()
-        context["data"] = data
-        context["has"] = hash
-        context["cod"] = code
+        context["employeeId"] = data[0]
+        context["emergencyContactId"]=data[1]
+        context["hash"] = hash
+        context["code"] = code
         print(data)
         return context
     

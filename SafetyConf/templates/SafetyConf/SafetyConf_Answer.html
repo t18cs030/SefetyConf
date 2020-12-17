@@ -2,7 +2,7 @@
 
 {% block title %} Answer {% endblock %}
 {% block main %}
-<form action="{% url 'SafetyConf:Answer' hash="hash" code="code" %}" method="post">
+<form action="{% url 'SafetyConf:Answer' hash code %}" method="post">
 {% csrf_token %}
 <form>
 <p>
@@ -19,9 +19,6 @@
 <table>
 {{message}}
 
-<p>
-{{data}}
-</p>
 </table>
 <input type = "submit" value = "送信"/>
 </form>
