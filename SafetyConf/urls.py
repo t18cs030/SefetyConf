@@ -14,7 +14,7 @@ urlpatterns = [
     path('EmployeeList',EmployeeListView.as_view(),name='EmployeeList'),
     path('Send',SendView.as_view(),name='Send'),
     path('TestSend',TestSendView.as_view(),name='TestSend'),
-    path('Answer',AnswerView.as_view(),name='Answer'),
+    path('Answer/<str:hash>/<str:code>',AnswerView.as_view(),name='Answer'),
     path('Thanks',ThanksView.as_view(),name='Thanks'),
     path('Result',ResultView.as_view(),name='Result'),
     

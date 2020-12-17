@@ -23,6 +23,10 @@ class EmployeeForm(forms.ModelForm):
         
 class EmergencyContactForm(forms.ModelForm):
     
+    def __init__(self , *args , **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["sendDate"].widget.attrs["readonly"]="readonly"
+    
     class Meta:
         model = EmergencyContact
         fields = ('emergencyContactId','destinationGroup','title','text','deadline','sendDate')
@@ -36,7 +40,12 @@ class EmergencyContactForm(forms.ModelForm):
             }
         
 class AnswerForm(forms.ModelForm):
-
+    
+    def __init__(self , *args , **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["sendDate"].widget.attrs["readonly"]="readonly"
+        self.fields["employee"].widget.attrs["disabled"]="disabled"
+    
     class Meta:
         model = Answer
         fields = ['employee','sendDate']
