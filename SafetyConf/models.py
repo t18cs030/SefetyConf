@@ -29,9 +29,7 @@ class EmergencyContact(models.Model):
     
     def __str__(self):
         return str(self.emergencyContactId)+" "+self.title
-    
-
-    
+        
 class Answer(models.Model):
     employee = models.ForeignKey(Employee,on_delete=models.CASCADE,null=False)
     emergencyContact = models.ForeignKey(EmergencyContact,on_delete=models.CASCADE,null=False)

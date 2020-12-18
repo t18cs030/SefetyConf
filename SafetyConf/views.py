@@ -1,12 +1,12 @@
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView , UpdateView
 from django.views.generic import ListView
 from .models import Employee,EmergencyContact,Answer
 from django.template.backends.django import Template
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Max
-from .forms import EmployeeIdForm,EmployeeForm,AnswerForm,ChoiceForm,MessageForm,EmergencyContactForm
+from .forms import EmployeeIdForm,EmployeeForm,AnswerForm,ChoiceForm,MessageForm,EmergencyContactForm,ChangeEmployeeForm
 from django.core.mail import send_mail,EmailMessage
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
@@ -169,6 +169,28 @@ class ThanksView(TemplateView):
 class ResultView(ListView):
     template_name = "SafetyConf/SafetyConf_Result.html"
     model = Answer
+    
+class ChangeEmployeeView(LoginRequiredMixin,UpdateView):
+    template_name= "SafetyConf/SafetyConf_Change.html"
+    model = Employee
+    form_class = ChangeEmployeeForm
+    fielfs = ["name","mailaddress","subMailaddress","group"]
+    success_url = "../EmployeeList"
+    
+    def get_initial(self):
+        initial = super().get_initial()
+        id = self.kwargs.get("pk")
+        initial['employee'] = self.model.objects.get(employeeId=id)
+        return initial
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['eid'] =  self.kwargs.get("pk")
+        return context
+    
+    def form_valid(self, form):
+        form.instance.save()
+        return super().form_valid(form)
 
 def send(request,id):
     emergencycontact = EmergencyContact.objects.get(emergencyContactId=id)
