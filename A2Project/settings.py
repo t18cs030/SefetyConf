@@ -141,4 +141,7 @@ EMAIL_HOST_PASSWORD = 'T18cs0A2'
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path(BASE_DIR / 'media')
     
