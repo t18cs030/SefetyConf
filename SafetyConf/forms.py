@@ -1,6 +1,6 @@
     
 from django import forms
-from .models import Employee,EmergencyContact,Answer
+from .models import Employee,EmergencyContact,Answer,Group
 from random import choice
 from pyexpat import model
 # Create your forms here.
@@ -26,6 +26,11 @@ class EmergencyContactForm(forms.ModelForm):
     def __init__(self , *args , **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["sendDate"].widget.attrs["readonly"]="readonly"
+        self.fields['destinationGroup']=forms.ModelMultipleChoiceField(
+            label="宛先グループ",
+            widget=forms.CheckboxSelectMultiple,
+            queryset=Group.objects.all()
+            )
     
     class Meta:
         model = EmergencyContact
@@ -44,14 +49,16 @@ class AnswerForm(forms.ModelForm):
     def __init__(self , *args , **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["sendDate"].widget.attrs["readonly"]="readonly"
-        self.fields["employee"].widget.attrs["disabled"]="disabled"
+        self.fields["employee"].widget = forms.HiddenInput()
+        self.fields["emergencyContact"].widget = forms.HiddenInput()
     
     class Meta:
         model = Answer
-        fields = ['employee','sendDate']
+        fields = ['employee','sendDate',"emergencyContact"]
         labels = {
             'employee':'従業員',
-            'sendDate':'送信日'
+            'sendDate':'送信日',
+            'emergencyContact':'緊急連絡',
             }
            
 class ChoiceForm(forms.Form):
@@ -62,7 +69,7 @@ class ChoiceForm(forms.Form):
         Choice_2 = { 
         ('不可能','不可能'),
         ('出勤可能','出勤可能')            
-            }
+        }
 
         answer_1 = forms.ChoiceField(label='本人',widget=forms.RadioSelect,choices=Choice_1)
         answer_2 = forms.ChoiceField(label='出勤',widget=forms.RadioSelect,choices=Choice_2)

@@ -19,32 +19,32 @@
 		<link>
 			<name>SafetyConf/templates/SafetyConf/SafetyConf_Add.html</name>
 			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/home/t18cs017/git/TA2/SafetyConf/templates/SafetyConf/SafetyConf_Add.html</locationURI>
+			<location>/home/csuser/git/TA2/SafetyConf/templates/SafetyConf/SafetyConf_Add.html</location>
 		</link>
 		<link>
 			<name>SafetyConf/templates/SafetyConf/SafetyConf_EmergencyList.html</name>
 			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/home/t18cs017/git/TA2/SafetyConf/templates/SafetyConf/SafetyConf_EmergencyList.html</locationURI>
+			<location>/home/csuser/git/TA2/SafetyConf/templates/SafetyConf/SafetyConf_EmergencyList.html</location>
 		</link>
 		<link>
 			<name>SafetyConf/templates/SafetyConf/SafetyConf_EmployeeList.html</name>
 			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/home/t18cs017/git/TA2/SafetyConf/templates/SafetyConf/SafetyConf_EmployeeList.html</locationURI>
+			<location>/home/csuser/git/TA2/SafetyConf/templates/SafetyConf/SafetyConf_EmployeeList.html</location>
 		</link>
 		<link>
 			<name>SafetyConf/templates/SafetyConf/SafetyConf_Index.html</name>
 			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/home/t18cs017/git/TA2/SafetyConf/templates/SafetyConf/SafetyConf_Index.html</locationURI>
+			<location>/home/csuser/git/TA2/SafetyConf/templates/SafetyConf/SafetyConf_Index.html</location>
 		</link>
 		<link>
 			<name>SafetyConf/templates/SafetyConf/SafetyConf_Send.html</name>
 			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/home/t18cs017/git/TA2/SafetyConf/templates/SafetyConf/SafetyConf_Send.html</locationURI>
+			<location>/home/csuser/git/TA2/SafetyConf/templates/SafetyConf/SafetyConf_Send.html</location>
 		</link>
 		<link>
 			<name>SafetyConf/templates/SafetyConf/SafetyConf_TestSend.html</name>
 			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/home/t18cs017/git/TA2/SafetyConf/templates/SafetyConf/SafetyConf_TestSend.html</locationURI>
+			<location>/home/csuser/git/TA2/SafetyConf/templates/SafetyConf/SafetyConf_TestSend.html</location>
 		</link>
 	</linkedResources>
 </projectDescription>

@@ -33,7 +33,8 @@ class EmergencyContact(models.Model):
 
     
 class Answer(models.Model):
-    employee = models.OneToOneField(Employee,on_delete=models.CASCADE)
+    employee = models.ForeignKey(Employee,on_delete=models.CASCADE,null=False)
+    emergencyContact = models.ForeignKey(EmergencyContact,on_delete=models.CASCADE,null=False)
     answer1 = models.CharField(max_length=30)
     answer2 = models.CharField(max_length=30)
     sendDate = models.DateTimeField(default=timezone.now)

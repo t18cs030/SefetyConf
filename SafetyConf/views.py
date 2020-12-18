@@ -86,6 +86,7 @@ class TestSendView(LoginRequiredMixin,CreateView):
         if minid==None:
             minid=0
         return {'emergencyContactId':minid+1}
+    
     def get_success_url(self):
         id = self.request.POST.get('emergencyContactId')
         subject = self.request.POST.get('title')
@@ -126,7 +127,7 @@ class AnswerView(CreateView):
     form_class = AnswerForm 
     form_class2 = ChoiceForm
     form_class3 = MessageForm
-    success_url = '../../Thanks'
+    success_url = '../../../Thanks'
         
     def form_valid(self, form):
         form2 = self.form_class2(self.request.POST)
@@ -147,6 +148,7 @@ class AnswerView(CreateView):
         data = decode_data(hash,code)
         initial = super().get_initial()
         initial["employee"]=Employee.objects.get(employeeId=data[0])
+        initial["emergencyContact"]=EmergencyContact.objects.get(emergencyContactId=data[1])
         return initial
         
     def get_context_data(self, **kwargs):
