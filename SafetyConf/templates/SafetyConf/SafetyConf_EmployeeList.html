@@ -6,11 +6,12 @@
 <table class="table">
 	<thead class="thead-dark">
 		<tr>
-			<th>id</th>
+			<th>社員番号</th>
 			<th>名前</th>
 			<th>メールアドレス</th>
 			<th>subメールアドレス</th>
 			<th>グループ</th>
+			<th>編集</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -25,6 +26,7 @@
 {{ group }}{% if forloop.last %}{% else %}，{% endif %}
 {% endfor %}
 </td>
+<td><a href="{% url 'SafetyConf:Change' Employee.employeeId %}">変更</a></td>
 </tr>
 {% endfor %}
 </table>
