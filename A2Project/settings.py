@@ -11,11 +11,12 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
-from django.conf.global_settings import LOGIN_REDIRECT_URL, EMAIL_BACKEND
+from django.conf.global_settings import LOGIN_REDIRECT_URL, EMAIL_BACKEND,\
+    DEFAULT_FROM_EMAIL
+from unittest.mock import DEFAULT
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
@@ -26,7 +27,7 @@ SECRET_KEY = 'uk8(+6d2#@8osr&j8&n!io@fas1sl^al(2hfncyq64_25l*n4s'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["127.0.0.1","localhost",".pythonanywhere.com"]
 
 
 # Application definition
@@ -122,18 +123,21 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = (
-        os.path.join(BASE_DIR, 'static'),
-    )
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'static') 
+    
 LOGIN_URL='SafetyConf:login'
 LOGOUT_URL='SafetyConf:logout'
 LOGIN_REDIRECT_URL='SafetyConf:Index'
 LOGOUT_REDIRECT_URL='SafetyConf:login'
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-EMAIL_HOST = 'localhost'
-EMAIL_POST = 25
-EMAIL_HOST_USER = 'unko'
-EMAIL_HOST_PASSWARD = '12345678'
-EMAIL_USE_TLS = True
 
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'a2yama2020@gmail.com'
+EMAIL_HOST_PASSWORD = 'T18cs0A2'
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR , 'media')
+    

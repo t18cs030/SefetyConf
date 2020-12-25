@@ -1,1 +1,33 @@
-<li><a href="{% url 'SafetyConf:Index' %}">メインページ</a></li>
+{% extends "base.html" %}
+
+{% block title %} 個別リスト {% endblock %}
+
+{% block main %}
+<table class="table">
+	<thead class="thead-dark">
+		<tr>
+			<th>従業員名</th>
+			<th>日付</th>
+			<th>解答1</th>
+			<th>解答2</th>
+	       <th>メッセージ</th>
+		</tr>
+	</thead>
+	<tbody>
+{% for Answer in object_list%}
+<tr>
+<td scope="row">{{ Answer.employee }}</td>
+<td>{{ Answer.sendDate }}</td>
+<td>{{ Answer.answer1 }}</td>
+<td>{{	Answer.answer2 }}</td>
+<td>{{	Answer.message }}</td>
+</tr>
+{% endfor %}
+</table>
+
+
+<ul>
+<li><a href="{% url 'SafetyConf:Index' %}">メインメニュー</a></li>
+</ul>
+{% endblock %}
+

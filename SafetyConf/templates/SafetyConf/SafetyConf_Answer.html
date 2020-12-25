@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %} Answer {% endblock %}
+{% block main %}
+<form action="{% url 'SafetyConf:Answer' hash code %}" method="post">
+{% csrf_token %}
+<form>
+<p>
+<table>
+{{form.as_table}}
+</table>
+</p>
+<p>
+<font size="4">確認項目
+</p>
+<p>
+{{choice}}
+</p>
+<table>
+{{message}}
+
+</table>
+<input type = "submit" value = "送信"/>
+</form>
+{% endblock %}

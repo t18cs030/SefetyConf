@@ -1,0 +1,16 @@
+安否確認を受け付けました<br>
+<span id="SET_COUNT">10</span>秒後にホームページに遷移します・・・<br>
+<script>
+	var timer = 10;
+  
+    function countdown(counter) {
+        if (counter < 1){
+	    return;
+        }
+        timer--;
+        document.getElementById("SET_COUNT").textContent = timer;
+    }
+    setInterval(countdown,1000,timer);
+</script>
+<br>
+<meta http-equiv="refresh" content=" 10; url=https://www.syncinfo.co.jp/">

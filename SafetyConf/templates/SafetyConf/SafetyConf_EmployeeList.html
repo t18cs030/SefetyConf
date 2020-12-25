@@ -1,16 +1,17 @@
 {% extends "base.html" %}
 
-{% block title %} 個別リスト {% endblock %}
+{% block title %} 従業員リスト{% endblock %}
 
 {% block main %}
 <table class="table">
 	<thead class="thead-dark">
 		<tr>
-			<th>id</th>
+			<th>社員番号</th>
 			<th>名前</th>
 			<th>メールアドレス</th>
 			<th>subメールアドレス</th>
 			<th>グループ</th>
+			<th>編集</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -20,7 +21,12 @@
 <td>{{ Employee.name }}</td>
 <td>{{ Employee.mailaddress }}</td>
 <td>{{ Employee.subMailaddress }}</td>
-<td>{{ Employee.group }}</td>
+<td>
+{% for group in Employee.group.all %}
+{{ group }}{% if forloop.last %}{% else %}，{% endif %}
+{% endfor %}
+</td>
+<td><a href="{% url 'SafetyConf:Change' Employee.employeeId %}">変更</a></td>
 </tr>
 {% endfor %}
 </table>
