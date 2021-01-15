@@ -3,8 +3,8 @@
 {% block title %} 従業員リスト{% endblock %}
 
 {% block main %}
-<table class="table">
-	<thead class="thead-dark">
+<table class="table table-striped"><br>
+	<thead class="thead">
 		<tr>
 			<th>社員番号</th>
 			<th>名前</th>
@@ -26,14 +26,23 @@
 {{ group }}{% if forloop.last %}{% else %}，{% endif %}
 {% endfor %}
 </td>
-<td><a href="{% url 'SafetyConf:Change' Employee.employeeId %}">変更</a></td>
+<td>
+<div class="text">
+<a class="btn btn-outline-primary" href="{% url 'SafetyConf:Change' Employee.employeeId %}">変更</a>
+</div>
+</td>
 </tr>
 {% endfor %}
 </table>
 
+<div class="text">
+		<a class="btn btn-outline-primary" href="{% url 'SafetyConf:Index' %}" role="button">メインメニュー</a>
+</div>
 
+<!--
 <ul>
 <li><a href="{% url 'SafetyConf:Index' %}">メインメニュー</a></li>
 </ul>
+-->
 {% endblock %}
 
