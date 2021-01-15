@@ -4,6 +4,7 @@
 {% block main %}
 <form action="{% url 'SafetyConf:Answer' hash code %}" method="post">
 {% csrf_token %}
+{% if ec.getDeadLine %}
 <form>
 <p>
 <table>
@@ -22,4 +23,7 @@
 </table>
 <input type = "submit" value = "送信"/>
 </form>
+{% else %}
+この安否確認はすでに締め切られています。
+{% endif %}
 {% endblock %}

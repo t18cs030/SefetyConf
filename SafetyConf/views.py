@@ -19,6 +19,7 @@ import urllib
 from urllib import parse as parse
 import base64
 from django.db import transaction
+from django.utils import timezone
 
 MY_SECRET = "TeamAFK"
 
@@ -56,6 +57,7 @@ class SendView(LoginRequiredMixin,CreateView):
         if minid==None:
             minid=0
         return {'emergencyContactId':minid+1}
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         minid=EmergencyContact.objects.all().aggregate(Max('emergencyContactId'))['emergencyContactId__max']
@@ -156,10 +158,12 @@ class AnswerView(CreateView):
         code = self.kwargs.get("c")
         data = decode_data(hash,code)
         context = super().get_context_data(**kwargs)
+        emergencyContact = EmergencyContact.objects.get(emergencyContactId=data[1])
         context['choice'] = ChoiceForm()
         context['message'] = MessageForm()
         context["hash"] = hash
         context["code"] = code
+        context["ec"]=emergencyContact
         return context
     
     
