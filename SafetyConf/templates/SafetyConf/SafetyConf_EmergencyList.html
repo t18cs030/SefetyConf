@@ -3,13 +3,19 @@
 {% block title %} 個別リスト {% endblock %}
 
 {% block main %}
+   <form action="" method="get">
+        <input name="query" value="{{ request.GET.query }}" type="text">
+        <button type="submit">検索する</button>
+    </form>
+ 
+<br>
 <table class="table">
 	<thead class="thead-dark">
 		<tr>
 			<th>id</th>	
 			<th>タイトル</th>
 			<th>テキスト</th>
-			<th>デットライン</th>
+			<th>期限</th>
 			<th>送信日時</th>
 			<th>宛先</th>
 		</tr>

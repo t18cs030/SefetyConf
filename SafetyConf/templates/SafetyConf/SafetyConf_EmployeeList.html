@@ -3,8 +3,15 @@
 {% block title %} 従業員リスト{% endblock %}
 
 {% block main %}
-<table class="table table-striped"><br>
+   <form action="" method="get">
+        <input name="query" value="{{ request.GET.query }}" type="text">
+        <button type="submit">検索する</button>
+    </form>
+ 
+<br>
+<table class="table table-striped">
 	<thead class="thead">
+
 		<tr>
 			<th>社員番号</th>
 			<th>名前</th>

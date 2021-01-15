@@ -19,6 +19,9 @@ import urllib
 from urllib import parse as parse
 import base64
 from django.db import transaction
+from django.db.models import Q
+from django.utils import timezone
+
 
 MY_SECRET = "TeamAFK"
 
@@ -41,6 +44,17 @@ class EmergencyListView(LoginRequiredMixin,ListView):
     template_name = "SafetyConf/SafetyConf_EmergencyList.html" 
     model = EmergencyContact
     
+    def get_queryset(self):
+        q_word = self.request.GET.get('query')
+        if q_word:
+            object_list = EmergencyContact.objects.filter(
+            Q(emergencyContactId__icontains=q_word) | Q(title__icontains=q_word) | Q(text__icontains=q_word) | Q(destinationGroup__name=q_word))
+
+        else:
+            object_list = EmergencyContact.objects.all()
+            
+        return object_list
+    
 class SendView(LoginRequiredMixin,CreateView):
     template_name = "SafetyConf/SafetyConf_Send.html"
     model = EmergencyContact
@@ -56,6 +70,7 @@ class SendView(LoginRequiredMixin,CreateView):
         if minid==None:
             minid=0
         return {'emergencyContactId':minid+1}
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         minid=EmergencyContact.objects.all().aggregate(Max('emergencyContactId'))['emergencyContactId__max']
@@ -74,6 +89,16 @@ class EmployeeListView(LoginRequiredMixin,ListView):
 
     template_name = "SafetyConf/SafetyConf_EmployeeList.html"
     model = Employee 
+    def get_queryset(self):
+        q_word = self.request.GET.get('query')
+        if q_word:
+            object_list = Employee.objects.filter(
+            Q(employeeId__icontains=q_word) | Q(name__icontains=q_word) | Q(mailaddress__icontains=q_word) | Q(subMailaddress__icontains=q_word) | Q(group__name=q_word))
+
+        else:
+            object_list = Employee.objects.all()
+            
+        return object_list
     
 class TestSendView(LoginRequiredMixin,CreateView):
     template_name = "SafetyConf/SafetyConf_TestSend.html"
@@ -156,10 +181,12 @@ class AnswerView(CreateView):
         code = self.kwargs.get("c")
         data = decode_data(hash,code)
         context = super().get_context_data(**kwargs)
+        emergencyContact = EmergencyContact.objects.get(emergencyContactId=data[1])
         context['choice'] = ChoiceForm()
         context['message'] = MessageForm()
         context["hash"] = hash
         context["code"] = code
+        context["ec"]=emergencyContact
         return context
     
     
@@ -170,6 +197,16 @@ class ResultView(ListView):
     template_name = "SafetyConf/SafetyConf_Result.html"
     model = Answer
     
+    def get_queryset(self):
+        q_word = self.request.GET.get('query')
+ 
+        if q_word:
+            object_list = Answer.objects.filter(
+                Q(employee__icontains=q_word) | Q(emergencyContact__icontains=q_word))
+        else:
+            object_list = Answer.objects.all()
+        return object_list
+      
 class ChangeEmployeeView(LoginRequiredMixin,UpdateView):
     template_name= "SafetyConf/SafetyConf_Change.html"
     model = Employee
