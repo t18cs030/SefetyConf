@@ -3,6 +3,12 @@
 {% block title %} TestSend {% endblock %}
 
 {% block main %}
+  <script>
+      $(function () {
+          let dateFormat = 'yy-mm-dd';
+          $('#id_deadline').datepicker({dateFormat: dateFormat});
+      });
+  </script>
 <form action="{% url 'SafetyConf:TestSend' %}" method="post">
 {% csrf_token %}
 <table>
