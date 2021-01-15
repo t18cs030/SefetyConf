@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import IndexView,AddView,EmergencyListView
-from .views import EmployeeListView,SendView,TestSendView,ResultView
+from .views import EmployeeListView,SendView,TestSendView,ResultView,ChangeEmployeeView
 from .views import AnswerView,ThanksView
 from . import views
 from django.contrib.auth import views as auth_views
@@ -19,6 +19,7 @@ urlpatterns = [
     path('Answer/<str:h>/<str:c>/',AnswerView.as_view(),name='Answer'),
     path('Thanks',ThanksView.as_view(),name='Thanks'),
     path('Result',ResultView.as_view(),name='Result'),
+    path('Change/<int:pk>',ChangeEmployeeView.as_view(),name='Change'),
     
 ]
 

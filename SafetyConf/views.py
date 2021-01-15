@@ -1,12 +1,12 @@
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView , UpdateView
 from django.views.generic import ListView
 from .models import Employee,EmergencyContact,Answer
 from django.template.backends.django import Template
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Max
-from .forms import EmployeeIdForm,EmployeeForm,AnswerForm,ChoiceForm,MessageForm,EmergencyContactForm
+from .forms import EmployeeIdForm,EmployeeForm,AnswerForm,ChoiceForm,MessageForm,EmergencyContactForm,ChangeEmployeeForm
 from django.core.mail import send_mail,EmailMessage
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
@@ -20,6 +20,8 @@ from urllib import parse as parse
 import base64
 from django.db import transaction
 from django.db.models import Q
+from django.utils import timezone
+
 
 MY_SECRET = "TeamAFK"
 
@@ -68,6 +70,7 @@ class SendView(LoginRequiredMixin,CreateView):
         if minid==None:
             minid=0
         return {'emergencyContactId':minid+1}
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         minid=EmergencyContact.objects.all().aggregate(Max('emergencyContactId'))['emergencyContactId__max']
@@ -178,10 +181,12 @@ class AnswerView(CreateView):
         code = self.kwargs.get("c")
         data = decode_data(hash,code)
         context = super().get_context_data(**kwargs)
+        emergencyContact = EmergencyContact.objects.get(emergencyContactId=data[1])
         context['choice'] = ChoiceForm()
         context['message'] = MessageForm()
         context["hash"] = hash
         context["code"] = code
+        context["ec"]=emergencyContact
         return context
     
     
@@ -201,6 +206,28 @@ class ResultView(ListView):
         else:
             object_list = Answer.objects.all()
         return object_list
+      
+class ChangeEmployeeView(LoginRequiredMixin,UpdateView):
+    template_name= "SafetyConf/SafetyConf_Change.html"
+    model = Employee
+    form_class = ChangeEmployeeForm
+    fielfs = ["name","mailaddress","subMailaddress","group"]
+    success_url = "../EmployeeList"
+    
+    def get_initial(self):
+        initial = super().get_initial()
+        id = self.kwargs.get("pk")
+        initial['employee'] = self.model.objects.get(employeeId=id)
+        return initial
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['eid'] =  self.kwargs.get("pk")
+        return context
+    
+    def form_valid(self, form):
+        form.instance.save()
+        return super().form_valid(form)
 
 def send(request,id):
     emergencycontact = EmergencyContact.objects.get(emergencyContactId=id)
