@@ -23,7 +23,7 @@
 	<tbody>
 {% for EmergencyContact in object_list %}
 <tr>
-<td scope="row">{{ EmergencyContact.emergencyContactId }}</td>
+<th scope="row">{{ EmergencyContact.emergencyContactId }}</t>
 <td>{{ EmergencyContact.title }}</td>
 <td>{{ EmergencyContact.text }}</td>
 <td>{{ EmergencyContact.deadline }}</td>
@@ -35,10 +35,10 @@
 </td>
 </tr>
 {% endfor %}
+</body>
 </table>
 
 
-<ul>
-<li><a href="{% url 'SafetyConf:Index' %}">メインメニュー</a></li>
-</ul>
+
+<button type="button" class="btn btn-primary"><a href="{% url 'SafetyConf:Index' %}"><font color="white">メインメニュー</font></a></button>
 {% endblock %}
