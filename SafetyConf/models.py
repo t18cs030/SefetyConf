@@ -33,6 +33,9 @@ class EmergencyContact(models.Model):
     
     def getDeadLine(self,time=timezone.now()):
         return self.deadline > time
+    
+    def is_exist(self,emp):
+        return Answer.objects.filter(emergencyContact=self,employee=emp).exists()
         
 class Answer(models.Model):
     employee = models.ForeignKey(Employee,on_delete=models.CASCADE,null=False)

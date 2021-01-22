@@ -77,12 +77,10 @@ class SendView(LoginRequiredMixin,CreateView):
         if minid==None:
             minid=0
         context['id'] = minid+1
-        print(minid+1)
         return context
     
     def get_success_url(self):
         id = self.object.emergencyContactId
-        print(id)
         return reverse_lazy('SafetyConf:send',kwargs={'id':id})
 
 class EmployeeListView(LoginRequiredMixin,ListView):
@@ -187,6 +185,8 @@ class AnswerView(CreateView):
         context["hash"] = hash
         context["code"] = code
         context["ec"]=emergencyContact
+        context["employee"]=Employee.objects.get(employeeId=data[0])
+        context["answerd"]=context["ec"].is_exist(context["employee"])
         return context
     
     
@@ -211,20 +211,18 @@ class ChangeEmployeeView(LoginRequiredMixin,UpdateView):
     template_name= "SafetyConf/SafetyConf_Change.html"
     model = Employee
     form_class = ChangeEmployeeForm
-    fielfs = ["name","mailaddress","subMailaddress","group"]
     success_url = "../EmployeeList"
-    
-    def get_initial(self):
-        initial = super().get_initial()
+        
+    def get_object(self, queryset=None):
         id = self.kwargs.get("pk")
-        initial['employee'] = self.model.objects.get(employeeId=id)
-        return initial
+        obj = Employee.objects.get(employeeId=id)
+        return obj
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['eid'] =  self.kwargs.get("pk")
         return context
-    
+
     def form_valid(self, form):
         form.instance.save()
         return super().form_valid(form)
