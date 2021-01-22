@@ -136,7 +136,7 @@ EMAIL_HOST_USER = 'a2yama2020@gmail.com'
 EMAIL_HOST_PASSWORD = 'T18cs0A2'
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR , 'media')

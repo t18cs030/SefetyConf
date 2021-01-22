@@ -1,7 +1,7 @@
 {{　name }}様
-
+安否確認メールです。
 社員番号：{{ employeeId }}
 期日：{{ deadline　}}
 本文：{{ text }}
 
-http://127.0.0.1:8000/SafetyConf/Answer/{{m}}/{{code}}
+http://teamafk.pythonanywhere.com//SafetyConf/Answer/{{m}}/{{code}}

@@ -1,3 +1,8 @@
+{% extends "base.html" %}
+
+{% block title %} 回答完了 {% endblock %}
+
+{% block main %}
 安否確認を受け付けました<br>
 <span id="SET_COUNT">10</span>秒後にホームページに遷移します・・・<br>
 <script>
@@ -14,3 +19,4 @@
 </script>
 <br>
 <meta http-equiv="refresh" content=" 10; url=https://www.syncinfo.co.jp/">
+{% endblock %}

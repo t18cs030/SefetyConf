@@ -6,7 +6,7 @@ from .models import Employee,EmergencyContact,Answer
 from django.template.backends.django import Template
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Max
-from .forms import EmployeeIdForm,EmployeeForm,AnswerForm,ChoiceForm,MessageForm,EmergencyContactForm,ChangeEmployeeForm
+from .forms import EmployeeIdForm,EmployeeForm,AnswerForm,ChoiceForm,MessageForm,EmergencyContactForm,ChangeEmployeeForm,GroupForm
 from django.core.mail import send_mail,EmailMessage
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
@@ -20,8 +20,8 @@ from urllib import parse as parse
 import base64
 from django.db import transaction
 from django.db.models import Q
+from django.contrib.auth.models import Group
 from django.utils import timezone
-
 
 MY_SECRET = "TeamAFK"
 
@@ -77,12 +77,10 @@ class SendView(LoginRequiredMixin,CreateView):
         if minid==None:
             minid=0
         context['id'] = minid+1
-        print(minid+1)
         return context
     
     def get_success_url(self):
         id = self.object.emergencyContactId
-        print(id)
         return reverse_lazy('SafetyConf:send',kwargs={'id':id})
 
 class EmployeeListView(LoginRequiredMixin,ListView):
@@ -117,7 +115,6 @@ class TestSendView(LoginRequiredMixin,CreateView):
         subject = self.request.POST.get('title')
         message = self.request.POST.get('text')
         groups = self.object.destinationGroup
-        print(groups.all())
         employees = []
         for groupe in groups.all() :
             employees += Employee.objects.filter(group=groupe)
@@ -187,6 +184,8 @@ class AnswerView(CreateView):
         context["hash"] = hash
         context["code"] = code
         context["ec"]=emergencyContact
+        context["employee"]=Employee.objects.get(employeeId=data[0])
+        context["answerd"]=context["ec"].is_exist(context["employee"])
         return context
     
     
@@ -199,35 +198,50 @@ class ResultView(ListView):
     
     def get_queryset(self):
         q_word = self.request.GET.get('query')
- 
+        id =  self.kwargs.get("pk")
+        emergencycontact = EmergencyContact.objects.get(emergencyContactId=id)
+        answers = Answer.objects.filter(emergencyContact=emergencycontact)
+        
         if q_word:
             object_list = Answer.objects.filter(
-                Q(employee__icontains=q_word) | Q(emergencyContact__icontains=q_word))
+                Q(employee__employeeId=q_word) | Q(emergencyContact__title=q_word) )
         else:
-            object_list = Answer.objects.all()
+            object_list = answers
         return object_list
-      
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        id =  self.kwargs.get("pk")
+        emergencycontact = EmergencyContact.objects.get(emergencyContactId=id)
+        answers = Answer.objects.filter(emergencyContact=emergencycontact)
+        return context
+
 class ChangeEmployeeView(LoginRequiredMixin,UpdateView):
     template_name= "SafetyConf/SafetyConf_Change.html"
     model = Employee
     form_class = ChangeEmployeeForm
-    fielfs = ["name","mailaddress","subMailaddress","group"]
     success_url = "../EmployeeList"
-    
-    def get_initial(self):
-        initial = super().get_initial()
+        
+    def get_object(self, queryset=None):
         id = self.kwargs.get("pk")
-        initial['employee'] = self.model.objects.get(employeeId=id)
-        return initial
+        obj = Employee.objects.get(employeeId=id)
+        return obj
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['eid'] =  self.kwargs.get("pk")
         return context
-    
+      
     def form_valid(self, form):
         form.instance.save()
         return super().form_valid(form)
+      
+class AddGroupView(LoginRequiredMixin,CreateView):
+    template_name = "SafetyConf/SafetyConf_AddGroup.html"
+    model = Group
+    form_class = GroupForm
+    success_url = 'Index/'
+    
 
 def send(request,id):
     emergencycontact = EmergencyContact.objects.get(emergencyContactId=id)
@@ -245,7 +259,6 @@ def send(request,id):
             continue
         else:
             sent_list.append(employee.mailaddress) 
-            print(sent_list)
             recipient_list.append(employee.mailaddress) 
             data = [employee.employeeId,int(id)]
             m,code = encode_data(data)
