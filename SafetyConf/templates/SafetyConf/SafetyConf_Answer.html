@@ -5,17 +5,20 @@
 <form action="{% url 'SafetyConf:Answer' hash code %}" method="post">
 {% csrf_token %}
 {% if answerd %}
-すでに回答済みです。
+すでに回答済みです。<br>
+<a href="https://www.syncinfo.co.jp">ホームページに戻る</a>
 {% elif ec.getDeadLine %}
 <form>
 <p>
-<table>
 {{form.as_table}}
-</table>
 </p>
-{{ employee.name }}さん
+<font size="5">
+{{ employee.name }}さん<br>
+<font size="4">
+安否確認のために以下の回答をお願いします。
+{{ ec.text }}
 <p>
-<font size="4">確認項目
+確認項目
 </p>
 <p>
 {{choice}}
@@ -23,11 +26,15 @@
 <table>
 メッセージ：
 {{message.message}}
-
 </table>
-<input type = "submit" value = "送信"/>
+<div class="text-center">
+<div class="pt-3">
+<input type="submit" value = "送信"/>
+</div>
+</div>
 </form>
 {% else %}
-この安否確認はすでに締め切られています。
+この安否確認はすでに締め切られています。<br>
+
 {% endif %}
 {% endblock %}

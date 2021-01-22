@@ -232,7 +232,7 @@ class ChangeEmployeeView(LoginRequiredMixin,UpdateView):
         context['eid'] =  self.kwargs.get("pk")
         return context
       
-     def form_valid(self, form):
+    def form_valid(self, form):
         form.instance.save()
         return super().form_valid(form)
       
