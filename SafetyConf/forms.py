@@ -112,3 +112,11 @@ class MessageForm(forms.ModelForm):
         labels = {
             'message':'メッセージ',
             }
+class GroupForm(forms.ModelForm):
+    class Meta:
+        model = Group
+        fields = ['groupId','name']
+        labels = {
+            'groupId':'ID',
+            'name':'名前'
+            }
