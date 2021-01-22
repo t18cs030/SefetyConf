@@ -1,9 +1,22 @@
-<p> A2です。 </p>
-<li><a href="{% url 'SafetyConf:EmergencyList' %}">緊急連絡一覧</a></li>
-<li><a href="{% url 'SafetyConf:Send' %}">緊急連絡送信</a></li>
-<li><a href="{% url 'SafetyConf:TestSend' %}">テスト送信</a></li>
-<li><a href="{% url 'SafetyConf:Result' %}">結果</a></li>
-<li><a href="{% url 'SafetyConf:Add' %}">追加</a></li>
-<li><a href="{% url 'SafetyConf:EmployeeList' %}">社員一覧</a></li>
-<li><a href="{% url 'SafetyConf:logout' %}">ログアウト</a></li>
+{% extends "base.html" %}
 
+{% block main %}
+	<div class="text-right">
+		<a class="btn btn-outline-primary" href="{% url 'SafetyConf:logout' %}" role="button">ログアウト</a>
+	</div>
+	<!--
+	</div>
+		<div class="text-center" >
+		<a class="btn btn-outline-primary w-50" href="{% url 'SafetyConf:logout' %}" role="button">ログアウト</a>
+	</div>
+	-->
+	<p> A2です。 </p>
+	<div class="text-center">
+		<a class="btn btn-outline-primary" href="{% url 'SafetyConf:EmergencyList' %}" role="button">緊急連絡一覧</a>
+		<a class="btn btn-outline-primary" href="{% url 'SafetyConf:Send' %}" role="button">緊急連絡送信</a>
+		<a class="btn btn-outline-primary" href="{% url 'SafetyConf:TestSend' %}" role="button">テスト送信</a>
+		<a class="btn btn-outline-primary" href="{% url 'SafetyConf:Add' %}" role="button">追加</a>
+		<a class="btn btn-outline-primary" href="{% url 'SafetyConf:AddGroup' %}" role="button">グループ追加</a>
+		<a class="btn btn-outline-primary" href="{% url 'SafetyConf:EmployeeList' %}" role="button">社員一覧</a>
+	</div>
+{% endblock %}

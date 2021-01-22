@@ -7,7 +7,8 @@ class Group(models.Model):
     name = models.CharField(max_length=30)
     
     def __str__(self):
-          return self.name
+
+        return self.name
 
 class Employee(models.Model):
     employeeId = models.IntegerField(null=False,unique=True)
@@ -18,7 +19,7 @@ class Employee(models.Model):
     
     def __str__(self):
         return str(self.employeeId)+" "+self.name
-    
+
 class EmergencyContact(models.Model):
     emergencyContactId = models.IntegerField(null=False,unique=True)
     destinationGroup = models.ManyToManyField(Group)
@@ -29,9 +30,7 @@ class EmergencyContact(models.Model):
     
     def __str__(self):
         return str(self.emergencyContactId)+" "+self.title
-    
-
-    
+        
 class Answer(models.Model):
     employee = models.ForeignKey(Employee,on_delete=models.CASCADE,null=False)
     emergencyContact = models.ForeignKey(EmergencyContact,on_delete=models.CASCADE,null=False)

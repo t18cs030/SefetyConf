@@ -9,12 +9,42 @@ class EmployeeIdForm(forms.Form):
     employee_id = forms.IntegerField(label='ID')
     
 class EmployeeForm(forms.ModelForm):
+    
+    def __init__(self , *args , **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['group']=forms.ModelMultipleChoiceField(
+            label="所属グループ",
+            widget=forms.CheckboxSelectMultiple,
+            queryset=Group.objects.all()
+            )
 
     class Meta:
         model = Employee
         fields = ('employeeId', 'name', 'mailaddress', 'subMailaddress', 'group')
         labels = {
-            'employeeId':'id',
+            'employeeId':'社員番号',
+            'name':'名前',
+            'mailaddress':'メールアドレス',
+            'subMailaddress':'サブメールアドレス',
+            'group':'所属'
+            }
+        
+class ChangeEmployeeForm(forms.ModelForm):
+    
+    def __init__(self , *args , **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["employeeId"].widget.attrs["readonly"]="readonly"
+        self.fields['group']=forms.ModelMultipleChoiceField(
+            label="所属グループ",
+            widget=forms.CheckboxSelectMultiple,
+            queryset=Group.objects.all()
+            )
+
+    class Meta:
+        model = Employee
+        fields = ('employeeId', 'name', 'mailaddress', 'subMailaddress', 'group')
+        labels = {
+            'employeeId':'社員番号',
             'name':'名前',
             'mailaddress':'メールアドレス',
             'subMailaddress':'サブメールアドレス',
@@ -81,4 +111,12 @@ class MessageForm(forms.ModelForm):
         fields = ['message']
         labels = {
             'message':'メッセージ',
+            }
+class GroupForm(forms.ModelForm):
+    class Meta:
+        model = Group
+        fields = ['groupId','name']
+        labels = {
+            'groupId':'ID',
+            'name':'名前'
             }
