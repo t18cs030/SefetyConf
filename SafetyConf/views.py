@@ -21,6 +21,7 @@ import base64
 from django.db import transaction
 from django.db.models import Q
 from django.contrib.auth.models import Group
+from django.utils import timezone
 
 MY_SECRET = "TeamAFK"
 
@@ -69,6 +70,7 @@ class SendView(LoginRequiredMixin,CreateView):
         if minid==None:
             minid=0
         return {'emergencyContactId':minid+1}
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         minid=EmergencyContact.objects.all().aggregate(Max('emergencyContactId'))['emergencyContactId__max']
@@ -176,10 +178,14 @@ class AnswerView(CreateView):
         code = self.kwargs.get("c")
         data = decode_data(hash,code)
         context = super().get_context_data(**kwargs)
+        emergencyContact = EmergencyContact.objects.get(emergencyContactId=data[1])
         context['choice'] = ChoiceForm()
         context['message'] = MessageForm()
         context["hash"] = hash
         context["code"] = code
+        context["ec"]=emergencyContact
+        context["employee"]=Employee.objects.get(employeeId=data[0])
+        context["answerd"]=context["ec"].is_exist(context["employee"])
         return context
     
     
@@ -214,26 +220,28 @@ class ChangeEmployeeView(LoginRequiredMixin,UpdateView):
     template_name= "SafetyConf/SafetyConf_Change.html"
     model = Employee
     form_class = ChangeEmployeeForm
-    fields = ["name","mailaddress","subMailaddress","group"]
     success_url = "../EmployeeList"
-    
-    def get_initial(self):
-        initial = super().get_initial()
+        
+    def get_object(self, queryset=None):
         id = self.kwargs.get("pk")
-        initial['employee'] = self.model.objects.get(employeeId=id)
-        return initial
+        obj = Employee.objects.get(employeeId=id)
+        return obj
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['eid'] =  self.kwargs.get("pk")
         return context
+      
+     def form_valid(self, form):
+        form.instance.save()
+        return super().form_valid(form)
+      
 class AddGroupView(LoginRequiredMixin,CreateView):
     template_name = "SafetyConf/SafetyConf_AddGroup.html"
     model = Group
     form_class = GroupForm
     success_url = 'Index/'
     
-
 
 def send(request,id):
     emergencycontact = EmergencyContact.objects.get(emergencyContactId=id)

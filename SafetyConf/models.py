@@ -30,6 +30,13 @@ class EmergencyContact(models.Model):
     
     def __str__(self):
         return str(self.emergencyContactId)+" "+self.title
+    
+    def getDeadLine(self,time=timezone.now()):
+        return self.deadline > time
+    
+    def is_exist(self,emp):
+        return Answer.objects.filter(emergencyContact=self,employee=emp).exists()
+
         
 class Answer(models.Model):
     employee = models.ForeignKey(Employee,on_delete=models.CASCADE,null=False)
@@ -38,6 +45,9 @@ class Answer(models.Model):
     answer2 = models.CharField(max_length=30)
     sendDate = models.DateTimeField(default=timezone.now)
     message = models.TextField()
+    
+    def getDeadLine(self,time=timezone.now()):
+        return self.emergencyContact.getDeadLine(time)
     
  
     

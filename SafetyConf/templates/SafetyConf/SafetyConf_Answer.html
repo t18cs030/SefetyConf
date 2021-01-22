@@ -4,12 +4,16 @@
 {% block main %}
 <form action="{% url 'SafetyConf:Answer' hash code %}" method="post">
 {% csrf_token %}
+{% if answerd %}
+すでに回答済みです。
+{% elif ec.getDeadLine %}
 <form>
 <p>
 <table>
 {{form.as_table}}
 </table>
 </p>
+{{ employee.name }}さん
 <p>
 <font size="4">確認項目
 </p>
@@ -17,9 +21,13 @@
 {{choice}}
 </p>
 <table>
-{{message}}
+メッセージ：
+{{message.message}}
 
 </table>
 <input type = "submit" value = "送信"/>
 </form>
+{% else %}
+この安否確認はすでに締め切られています。
+{% endif %}
 {% endblock %}

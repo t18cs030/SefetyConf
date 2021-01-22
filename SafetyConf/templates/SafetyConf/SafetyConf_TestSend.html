@@ -3,12 +3,67 @@
 {% block title %} TestSend {% endblock %}
 
 {% block main %}
+  <script>
+      $(function () {
+          let dateFormat = 'yy-mm-dd';
+          $('#id_deadline').datepicker({dateFormat: dateFormat});
+      });
+  </script>
 <form action="{% url 'SafetyConf:TestSend' %}" method="post">
 {% csrf_token %}
+<div class="pt-3">
 <table>
-{{ form.as_table }}
-{{ group }}
-</table>
+<tr><td></td></tr>
+<tr>
+<td>{{ form.emergencyContactId.label_tag }}</td>
+<td>{{ form.emergencyContactId }}</td>
+</tr>
+
+<tr>
+<td>{{ form.destinationGroup.label_tag }}</td>
+<td>
+{% for checkbox in form.destinationGroup %}
+    <label class="btn">
+    {{ checkbox.tag }} {{ checkbox.choice_label }}
+    </label>
+{% endfor %}
+</td>
+</tr>
+
+<tr>
+<td>{{ form.title.label_tag }}</td>
+<td>{{ form.title }}</td>
+</tr>
+
+<tr>
+<td>{{ form.text.label_tag }}</td>
+<td>{{ form.text }}</td>
+</tr>
+
+<tr>
+<td>{{ form.deadline.label_tag }}</td>
+<td>{{ form.deadline }}</td>
+</tr>
+
+<tr>
+<td>{{ form.sendDate.label_tag}}</td>
+<td>{{ form.sendDate }}</td>
+</tr>
+
+<tr>
+<td></td>
+<td>
+<div class="text-center">
+<div class="pt-3">
 <input type="submit" value = "送信"/>
+</div>
+</div>
+</td>
+</tr>
+
+</table>
+
+</div>
+
 </form>
 {% endblock %}
