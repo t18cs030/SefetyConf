@@ -47,9 +47,9 @@ class EmergencyListView(LoginRequiredMixin,ListView):
     def get_queryset(self):
         q_word = self.request.GET.get('query')
         if q_word:
-            object_list = EmergencyContact.objects.filter(
+            ol = EmergencyContact.objects.filter(
             Q(emergencyContactId__icontains=q_word) | Q(title__icontains=q_word) | Q(text__icontains=q_word) | Q(destinationGroup__name=q_word))
-
+            object_list = list(set(ol))
         else:
             object_list = EmergencyContact.objects.all()
             
@@ -90,9 +90,9 @@ class EmployeeListView(LoginRequiredMixin,ListView):
     def get_queryset(self):
         q_word = self.request.GET.get('query')
         if q_word:
-            object_list = Employee.objects.filter(
+            ol = Employee.objects.filter(
             Q(employeeId__icontains=q_word) | Q(name__icontains=q_word) | Q(mailaddress__icontains=q_word) | Q(subMailaddress__icontains=q_word) | Q(group__name=q_word))
-
+            object_list = list(set(ol))
         else:
             object_list = Employee.objects.all()
             
@@ -138,7 +138,7 @@ class TestSendView(LoginRequiredMixin,CreateView):
                         "m":m,
                         "code":code.decode(),
                         }
-            message = render_to_string('SafetyConf/mails/main.txt', context)#self.request.POST.get('text')
+            message = render_to_string('SafetyConf/mails/main.txt', context)
             email = EmailMessage(subject,message, from_email, recipient_list)
             email.send()
         return reverse_lazy('SafetyConf:Index')
@@ -201,12 +201,17 @@ class ResultView(ListView):
         id =  self.kwargs.get("pk")
         emergencycontact = EmergencyContact.objects.get(emergencyContactId=id)
         answers = Answer.objects.filter(emergencyContact=emergencycontact)
-        
+        employees = emergencycontact.getNoAnswerEmployees()
+        print(employees)
         if q_word:
-            object_list = Answer.objects.filter(
-                Q(employee__employeeId=q_word) | Q(emergencyContact__title=q_word) )
+            ol = Answer.objects.filter(
+                Q(employee__employeeId=q_word,emergencyContact=emergencycontact) | Q(emergencyContact__title=q_word,emergencyContact=emergencycontact) )
+            object_list = list(set(ol))
+            if not(object_list):
+                object_list=Employee.objects.filter(Q(employeeId=q_word))
         else:
-            object_list = answers
+            object_list=list(emergencycontact.getNoAnswerEmployees())
+            object_list += list(answers)
         return object_list
     
     def get_context_data(self, **kwargs):
