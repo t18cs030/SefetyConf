@@ -15,7 +15,7 @@
 <font size="5">
 {{ employee.name }}さん<br>
 <font size="4">
-安否確認のために以下の回答をお願いします。
+安否確認のために以下の回答をお願いします。<br>
 {{ ec.text }}
 <p>
 確認項目
@@ -24,14 +24,19 @@
 {{choice}}
 </p>
 <table>
-メッセージ：
-{{message.message}}
+<tr>
+<td>メッセージ：</td>
+</tr>
+<tr>
+<td>{{message.message}}</td>
+</tr>
 </table>
 <div class="text-center">
 <div class="pt-3">
 <input type="submit" value = "送信"/>
 </div>
 </div>
+
 </form>
 {% else %}
 この安否確認はすでに締め切られています。<br>
