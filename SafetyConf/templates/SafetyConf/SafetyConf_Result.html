@@ -10,6 +10,7 @@
 <table class="table">
 	<thead class="thead-dark">
 		<tr>
+		   <th>社員番号</th>
 			<th>従業員名</th>
 			<th>日付</th>
 			<th>解答1</th>
@@ -18,14 +19,26 @@
 		</tr>
 	</thead>
 	<tbody>
-{% for Answer in object_list %}
+{% for object in object_list %}
+{% if object.getClass == 'Answer' %}
 <tr>
-<td scope="row">{{ Answer.employee }}</td>
-<td>{{ Answer.sendDate }}</td>
-<td>{{ Answer.answer1 }}</td>
-<td>{{	Answer.answer2 }}</td>
-<td>{{	Answer.message }}</td>
+<td scope="row">{{ object.employee.employeeId }}</td>
+<td>{{ object.employee.name }}</td>
+<td>{{ object.sendDate }}</td>
+<td>{{ object.answer1 }}</td>
+<td>{{	object.answer2 }}</td>
+<td>{{	object.message }}</td>
 </tr>
+{% elif object.getClass == 'Employee' %}
+<tr>
+<td scope="row">{{ object.employeeId }}</td>
+<td>{{ object.name }}</td>
+<td>未回答</td>
+<td>未回答</td>
+<td>未回答</td>
+<td>未回答</td>
+</tr>
+{% endif %}
 {% endfor %}
 </table>
 
