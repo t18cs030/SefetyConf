@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView , UpdateView
 from django.views.generic import ListView
-from .models import Employee,EmergencyContact,Answer
+from .models import Employee,EmergencyContact,Answer,Group
 from django.template.backends.django import Template
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Max
@@ -20,7 +20,6 @@ from urllib import parse as parse
 import base64
 from django.db import transaction
 from django.db.models import Q
-from django.contrib.auth.models import Group
 from django.utils import timezone
 
 MY_SECRET = "TeamAFK"
@@ -241,6 +240,13 @@ class AddGroupView(LoginRequiredMixin,CreateView):
     model = Group
     form_class = GroupForm
     success_url = 'Index/'
+    
+    def get_initial(self):
+        minid=Group.objects.all().aggregate(Max('groupId'))['groupId__max']
+        print(minid)
+        if minid==None:
+            minid=0
+        return {'groupId':minid+1}
     
 
 def send(request,id):

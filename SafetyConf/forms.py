@@ -55,12 +55,13 @@ class EmergencyContactForm(forms.ModelForm):
     
     def __init__(self , *args , **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["sendDate"].widget.attrs["readonly"]="readonly"
         self.fields['destinationGroup']=forms.ModelMultipleChoiceField(
             label="宛先グループ",
             widget=forms.CheckboxSelectMultiple,
             queryset=Group.objects.all()
             )
+        self.fields["emergencyContactId"].widget = forms.HiddenInput()
+        self.fields["sendDate"].widget = forms.HiddenInput()
     
     class Meta:
         model = EmergencyContact
@@ -113,6 +114,10 @@ class MessageForm(forms.ModelForm):
             'message':'メッセージ',
             }
 class GroupForm(forms.ModelForm):
+    def __init__(self , *args , **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["groupId"].widget = forms.HiddenInput()
+        
     class Meta:
         model = Group
         fields = ['groupId','name']
