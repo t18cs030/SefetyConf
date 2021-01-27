@@ -6,6 +6,7 @@
 <form action="{% url 'SafetyConf:AddGroup' %}" method="post">
 {% csrf_token %}
 <div class="pt-3">
+{{ form.groupId }}
 <table>
 <tr>
 <td>{{ form.name.label_tag }}</td>

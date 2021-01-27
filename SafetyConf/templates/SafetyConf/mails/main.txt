@@ -4,4 +4,4 @@
 期日：{{ deadline　}}
 本文：{{ text }}
 
-http://teamafk.pythonanywhere.com//SafetyConf/Answer/{{m}}/{{code}}
+http://teamafk.pythonanywhere.com/SafetyConf/Answer/{{m}}/{{code}}

@@ -24,12 +24,8 @@
 {{choice}}
 </p>
 <table>
-<tr>
-<td>メッセージ：</td>
-</tr>
-<tr>
-<td>{{message.message}}</td>
-</tr>
+メッセージ：<br>
+{{message.message}}
 </table>
 <div class="text-center">
 <div class="pt-3">
@@ -40,6 +36,6 @@
 </form>
 {% else %}
 この安否確認はすでに締め切られています。<br>
-
+<a href="https://www.syncinfo.co.jp">ホームページに戻る</a>
 {% endif %}
 {% endblock %}
