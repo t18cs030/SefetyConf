@@ -21,6 +21,7 @@
     {% endif %}
 {% endif %}
 
+<div class="pt-3">
 <form method="post" action="{% url 'SafetyConf:login' %}">
 {% csrf_token %}
 <div class="container text-center">
@@ -36,5 +37,6 @@
 <input type="hidden" name="next" value="{{ next }}">
 </div>
 </form>
+</div>
 
 {% endblock %}
