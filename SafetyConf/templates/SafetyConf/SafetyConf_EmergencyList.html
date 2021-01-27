@@ -3,14 +3,16 @@
 {% block title %} 個別リスト {% endblock %}
 
 {% block main %}
+<div class="pt-1">
    <form action="" method="get">
         <input name="query" value="{{ request.GET.query }}" type="text">
         <button type="submit">検索する</button>
     </form>
+ </div>
  
 <br>
-<table class="table">
-	<thead class="thead-dark">
+<table class="table table-striped">
+	<thead class="thead">
 		<tr>
 			<th>id</th>	
 			<th>タイトル</th>
@@ -41,7 +43,8 @@
 </body>
 </table>
 
+<div class="text">
+		<a class="btn btn-outline-primary" href="{% url 'SafetyConf:Index' %}" role="button">メインメニュー</a>
+</div>
 
-
-<button type="button" class="btn btn-primary"><a href="{% url 'SafetyConf:Index' %}"><font color="white">メインメニュー</font></a></button>
 {% endblock %}
