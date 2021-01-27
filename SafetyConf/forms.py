@@ -79,7 +79,7 @@ class AnswerForm(forms.ModelForm):
     
     def __init__(self , *args , **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["sendDate"].widget.attrs["readonly"]="readonly"
+        self.fields["sendDate"].widget = forms.HiddenInput()
         self.fields["employee"].widget = forms.HiddenInput()
         self.fields["emergencyContact"].widget = forms.HiddenInput()
     
