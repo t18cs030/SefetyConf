@@ -33,12 +33,6 @@ class AddView(LoginRequiredMixin,CreateView):
     form_class = EmployeeForm
     success_url = 'Index/'
     
-    def get_initial(self):
-        minid=Employee.objects.all().aggregate(Max('employeeId'))['employeeId__max']
-        if minid==None:
-            minid=0
-        return {'employeeId':minid+1}
-    
 class EmergencyListView(LoginRequiredMixin,ListView):
     template_name = "SafetyConf/SafetyConf_EmergencyList.html" 
     model = EmergencyContact
@@ -107,7 +101,7 @@ class TestSendView(LoginRequiredMixin,CreateView):
         minid=EmergencyContact.objects.all().aggregate(Max('emergencyContactId'))['emergencyContactId__max']
         if minid==None:
             minid=0
-        return {'emergencyContactId':minid+1}
+        return {'emergencyContactId':minid+1,'title':'安否確認訓練メール','text':'これは訓練です。'}
     
     def get_success_url(self):
         id = self.request.POST.get('emergencyContactId')
