@@ -195,7 +195,6 @@ class ResultView(ListView):
         emergencycontact = EmergencyContact.objects.get(emergencyContactId=id)
         answers = Answer.objects.filter(emergencyContact=emergencycontact)
         employees = emergencycontact.getNoAnswerEmployees()
-        print(employees)
         if q_word:
             ol = Answer.objects.filter(
                 Q(employee__employeeId=q_word,emergencyContact=emergencycontact) | Q(emergencyContact__title=q_word,emergencyContact=emergencycontact) )
@@ -242,7 +241,6 @@ class AddGroupView(LoginRequiredMixin,CreateView):
     
     def get_initial(self):
         minid=Group.objects.all().aggregate(Max('groupId'))['groupId__max']
-        print(minid)
         if minid==None:
             minid=0
         return {'groupId':minid+1}
@@ -282,7 +280,7 @@ def send(request,id):
 
 def encode_data(data):
     data.append(MY_SECRET)
-    text = base64.b64encode(zlib.compress(pickle.dumps(data, 0)))
+    text = base64.urlsafe_b64encode(zlib.compress(pickle.dumps(data, 0)))
     m = hashlib.md5(text).hexdigest()[:12]
     return m, text    
     
@@ -290,7 +288,7 @@ def decode_data(hash, enc):
     m = hashlib.md5(enc.encode()).hexdigest()[:12]
     if m != hash:
        raise Exception("Bad hash!")
-    data = pickle.loads(zlib.decompress(base64.b64decode(enc.encode())))
+    data = pickle.loads(zlib.decompress(base64.urlsafe_b64decode(enc.encode())))
     if data[len(data)-1] != MY_SECRET:
         raise Exception("Bad hash!")
     del data[len(data)-1]
