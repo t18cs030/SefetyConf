@@ -19,16 +19,6 @@
 <td>{{ form.emergencyContactId }}</td>
 </tr>
 
-<tr>
-<td>{{ form.destinationGroup.label_tag }}</td>
-<td>
-{% for checkbox in form.destinationGroup %}
-    <label class="btn">
-    {{ checkbox.tag }} {{ checkbox.choice_label }}
-    </label>
-{% endfor %}
-</td>
-</tr>
 
 <tr>
 <td>{{ form.title.label_tag }}</td>
