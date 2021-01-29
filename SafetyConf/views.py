@@ -21,11 +21,20 @@ import base64
 from django.db import transaction
 from django.db.models import Q
 from django.utils import timezone
+import datetime
 
 MY_SECRET = "TeamAFK"
 
 class IndexView(LoginRequiredMixin,TemplateView):
     template_name = "SafetyConf/SafetyConf_Index.html"
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        minid=EmergencyContact.objects.all().aggregate(Max('emergencyContactId'))['emergencyContactId__max']
+        if minid==None:
+            minid=0
+        context['eid'] = minid
+        return context
     
 class AddView(LoginRequiredMixin,CreateView):
     template_name = "SafetyConf/SafetyConf_Add.html"
@@ -104,7 +113,7 @@ class TestSendView(LoginRequiredMixin,CreateView):
         minid=EmergencyContact.objects.all().aggregate(Max('emergencyContactId'))['emergencyContactId__max']
         if minid==None:
             minid=0
-        return {'emergencyContactId':minid+1,'title':'安否確認訓練メール','text':'これは訓練です。'}
+        return {'emergencyContactId':minid+1,'title':'安否確認訓練メール','text':'これは訓練です。','deadline':timezone.now()+datetime.timedelta(days=3)}
     
     def get_success_url(self):
         id = self.request.POST.get('emergencyContactId')
