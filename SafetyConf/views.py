@@ -6,7 +6,7 @@ from .models import Employee,EmergencyContact,Answer,Group
 from django.template.backends.django import Template
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Max
-from .forms import EmployeeIdForm,EmployeeForm,AnswerForm,ChoiceForm,MessageForm,EmergencyContactForm,ChangeEmployeeForm,GroupForm
+from .forms import EmployeeIdForm,EmployeeForm,AnswerForm,ChoiceForm,MessageForm,EmergencyContactForm,TestForm,ChangeEmployeeForm,GroupForm
 from django.core.mail import send_mail,EmailMessage
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
@@ -106,7 +106,7 @@ class EmployeeListView(LoginRequiredMixin,ListView):
 class TestSendView(LoginRequiredMixin,CreateView):
     template_name = "SafetyConf/SafetyConf_TestSend.html"
     model = EmergencyContact
-    form_class = EmergencyContactForm
+    form_class = TestForm
     success_url = 'Index/'
     
     def get_initial(self):
@@ -118,24 +118,15 @@ class TestSendView(LoginRequiredMixin,CreateView):
     def get_success_url(self):
         id = self.request.POST.get('emergencyContactId')
         subject = self.request.POST.get('title')
-        message = self.request.POST.get('text')
-        groups = self.object.destinationGroup
-        employees = []
-        for groupe in groups.all() :
-            employees += Employee.objects.filter(group=groupe)
+        message = self.request.POST.get('text') 
+        employees = Employee.objects.all()
+        group = Group.objects.all()
+        self.object.destinationGroup.add(*group)
         from_email = settings.EMAIL_HOST_USER
-        sent_list = []
-        for employee in employees:
-            recipient_list = []
-            if employee.mailaddress in sent_list:
-                continue
-            else:
-                sent_list.append(employee.mailaddress) 
-            
-                recipient_list.append(employee.mailaddress) 
-                data = [employee.employeeId,int(id)]
-                m,code = encode_data(data)
-                context = {
+        for employee in employees: 
+            data = [employee.employeeId,int(id)]
+            m,code = encode_data(data)
+            context = {
                         "name":employee.name,
                         "employeeId":employee.employeeId,
                         "deadline":self.object.deadline,

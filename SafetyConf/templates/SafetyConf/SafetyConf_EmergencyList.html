@@ -34,7 +34,7 @@
 <td>{{ EmergencyContact.sendDate }}</td>
 <td>
 {% for emer in EmergencyContact.destinationGroup.all %}
-{{ emer }}
+{{ emer }}{% if forloop.last %}{% else %}，{% endif %}
 {% endfor %}
 </td>
 <td><a href="{% url 'SafetyConf:Result' EmergencyContact.emergencyContactId %}">回答リスト</a></td>

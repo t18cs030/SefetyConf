@@ -73,6 +73,22 @@ class EmergencyContactForm(forms.ModelForm):
             'text':'内容',
             'deadline':'期限'
             }
+class TestForm(forms.ModelForm):
+    
+    def __init__(self , *args , **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["emergencyContactId"].widget = forms.HiddenInput()
+        self.fields["sendDate"].widget = forms.HiddenInput()
+    
+    class Meta:
+        model = EmergencyContact
+        fields = ('emergencyContactId','title','text','deadline')
+        labels = {
+            'emergencyContactId':'id',
+            'title':'タイトル',
+            'text':'内容',
+            'deadline':'期限'
+            }
         
 class AnswerForm(forms.ModelForm):
     
