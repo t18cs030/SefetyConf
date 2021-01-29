@@ -24,26 +24,31 @@
     </label>
 {% endfor %}
 </td>
+<td>{{ form.destinationGroup.errors }}</td>
 </tr>
 
 <tr>
 <td>{{ form.title.label_tag }}</td>
 <td>{{ form.title }}</td>
+<td>{{ form.title.errors }}</td>
 </tr>
 
 <tr>
 <td>{{ form.text.label_tag }}</td>
 <td>{{ form.text }}</td>
+<td>{{ form.text.errors }}</td>
 </tr>
 
 <tr>
 <td>{{ form.deadline.label_tag }}</td>
 <td>{{ form.deadline }}</td>
+<td>{{ form.deadline.errors }}</td>
 </tr>
 
 <tr>
 <td>{{ form.emergencyContactId }}</td>
 <td>{{ form.sendDate }}</td>
+<td>{{ form.sendDate.errors }}</td>
 </tr>
 
 <tr>
