@@ -3,6 +3,7 @@ from django import forms
 from .models import Employee,EmergencyContact,Answer,Group
 from random import choice
 from pyexpat import model
+from django.core.exceptions import ValidationError
 # Create your forms here.
 
 class EmployeeIdForm(forms.Form):
@@ -50,7 +51,7 @@ class ChangeEmployeeForm(forms.ModelForm):
             'subMailaddress':'サブメールアドレス',
             'group':'所属'
             }
-        
+     
 class EmergencyContactForm(forms.ModelForm):
     
     def __init__(self , *args , **kwargs):
@@ -61,18 +62,16 @@ class EmergencyContactForm(forms.ModelForm):
             queryset=Group.objects.all()
             )
         self.fields["emergencyContactId"].widget = forms.HiddenInput()
-        self.fields["sendDate"].widget = forms.HiddenInput()
     
     class Meta:
         model = EmergencyContact
-        fields = ('emergencyContactId','destinationGroup','title','text','deadline','sendDate')
+        fields = ('emergencyContactId','destinationGroup','title','text','deadline')
         labels = {
             'emergencyContactId':'id',
             'destinationGroup':'所属',
             'title':'タイトル',
             'text':'内容',
-            'deadline':'期限',
-            'sendDate':'送信日'
+            'deadline':'期限'
             }
 class TestForm(forms.ModelForm):
     
@@ -96,16 +95,14 @@ class AnswerForm(forms.ModelForm):
     
     def __init__(self , *args , **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["sendDate"].widget.attrs["readonly"]="readonly"
         self.fields["employee"].widget = forms.HiddenInput()
         self.fields["emergencyContact"].widget = forms.HiddenInput()
     
     class Meta:
         model = Answer
-        fields = ['employee','sendDate',"emergencyContact"]
+        fields = ['employee',"emergencyContact"]
         labels = {
             'employee':'従業員',
-            'sendDate':'送信日',
             'emergencyContact':'緊急連絡',
             }
            

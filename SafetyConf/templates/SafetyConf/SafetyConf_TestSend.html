@@ -14,30 +14,41 @@
 <div class="pt-3">
 <table>
 <tr><td></td></tr>
-<tr>
-<td>{{ form.emergencyContactId.label_tag }}</td>
-<td>{{ form.emergencyContactId }}</td>
-</tr>
 
+<tr>
+<td>{{ form.destinationGroup.label_tag }}</td>
+<td>
+{% for checkbox in form.destinationGroup %}
+    <label class="btn">
+    {{ checkbox.tag }} {{ checkbox.choice_label }}
+    </label>
+{% endfor %}
+</td>
+<td>{{ form.destinationGroup.errors }}</td>
+</tr>
 
 <tr>
 <td>{{ form.title.label_tag }}</td>
 <td>{{ form.title }}</td>
+<td>{{ form.title.errors }}</td>
 </tr>
 
 <tr>
 <td>{{ form.text.label_tag }}</td>
 <td>{{ form.text }}</td>
+<td>{{ form.text.errors }}</td>
 </tr>
 
 <tr>
 <td>{{ form.deadline.label_tag }}</td>
 <td>{{ form.deadline }}</td>
+<td>{{ form.deadline.errors }}</td>
 </tr>
 
 <tr>
-<td>{{ form.sendDate.label_tag}}</td>
+<td>{{ form.emergencyContactId }}</td>
 <td>{{ form.sendDate }}</td>
+<td>{{ form.sendDate.errors }}</td>
 </tr>
 
 <tr>

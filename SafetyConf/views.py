@@ -34,11 +34,8 @@ class AddView(LoginRequiredMixin,CreateView):
     form_class = EmployeeForm
     success_url = 'Index/'
     
-    def get_initial(self):
-        minid=Employee.objects.all().aggregate(Max('employeeId'))['employeeId__max']
-        if minid==None:
-            minid=0
-        return {'employeeId':minid+1}
+    def form_invalid(self, form):
+        return self.render_to_response(self.get_context_data(form=form))
     
 class EmergencyListView(LoginRequiredMixin,ListView):
     template_name = "SafetyConf/SafetyConf_EmergencyList.html" 
@@ -108,7 +105,9 @@ class TestSendView(LoginRequiredMixin,CreateView):
         minid=EmergencyContact.objects.all().aggregate(Max('emergencyContactId'))['emergencyContactId__max']
         if minid==None:
             minid=0
-        return {'emergencyContactId':minid+1,'title':'安否確認メールです！','text':'テスト送信です','deadline':timezone.now()+datetime.timedelta(days=3)}
+
+        return {'emergencyContactId':minid+1,'title':'安否確認訓練メール','text':'これは訓練です。','deadline':timezone.now()+datetime.timedelta(days=3)}
+
     
     def get_success_url(self):
         id = self.request.POST.get('emergencyContactId')
@@ -193,13 +192,16 @@ class ResultView(ListView):
         emergencycontact = EmergencyContact.objects.get(emergencyContactId=id)
         answers = Answer.objects.filter(emergencyContact=emergencycontact)
         employees = emergencycontact.getNoAnswerEmployees()
-        print(employees)
         if q_word:
+            try:
+                eid = int(q_word)
+            except ValueError:
+                eid = None
             ol = Answer.objects.filter(
-                Q(employee__employeeId=q_word,emergencyContact=emergencycontact) | Q(emergencyContact__title=q_word,emergencyContact=emergencycontact) )
+                Q(employee__name__contains=q_word,emergencyContact=emergencycontact) |  Q(employee__employeeId=eid,emergencyContact=emergencycontact) )
             object_list = list(set(ol))
             if not(object_list):
-                object_list=Employee.objects.filter(Q(employeeId=q_word))
+                object_list=Employee.objects.filter(Q(name__contains=q_word)|Q(employeeId=eid))
         else:
             object_list=list(emergencycontact.getNoAnswerEmployees())
             object_list += list(answers)
@@ -240,7 +242,6 @@ class AddGroupView(LoginRequiredMixin,CreateView):
     
     def get_initial(self):
         minid=Group.objects.all().aggregate(Max('groupId'))['groupId__max']
-        print(minid)
         if minid==None:
             minid=0
         return {'groupId':minid+1}
@@ -280,7 +281,7 @@ def send(request,id):
 
 def encode_data(data):
     data.append(MY_SECRET)
-    text = base64.b64encode(zlib.compress(pickle.dumps(data, 0)))
+    text = base64.urlsafe_b64encode(zlib.compress(pickle.dumps(data, 0)))
     m = hashlib.md5(text).hexdigest()[:12]
     return m, text    
     
@@ -288,7 +289,7 @@ def decode_data(hash, enc):
     m = hashlib.md5(enc.encode()).hexdigest()[:12]
     if m != hash:
        raise Exception("Bad hash!")
-    data = pickle.loads(zlib.decompress(base64.b64decode(enc.encode())))
+    data = pickle.loads(zlib.decompress(base64.urlsafe_b64decode(enc.encode())))
     if data[len(data)-1] != MY_SECRET:
         raise Exception("Bad hash!")
     del data[len(data)-1]

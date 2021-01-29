@@ -9,22 +9,26 @@
 
 <tr>
 <td>{{ form.employeeId.label_tag }}</td>
-<td>{{ form.employeeId }}</td><br>
+<td>{{ form.employeeId }}</td>
+<td>{{ form.employeeId.errors }}</td>
 </tr>
 
 <tr>
 <td>{{ form.name.label_tag }}</td>
 <td>{{ form.name }}</td>
+<td>{{ form.name.errors }}</td>
 <tr>
 
 <tr>
 <td>{{ form.mailaddress.label_tag }}</td>
 <td>{{ form.mailaddress }}</td>
+<td>{{ form.mailaddress.errors }}</td>
 </tr>
 
 <tr>
 <td>{{ form.subMailaddress.label_tag }}</td>
 <td>{{ form.subMailaddress }}</td>
+<td>{{ form.subMailaddress.errors }}</td>
 </tr>
 
 <tr>
@@ -38,10 +42,21 @@
     </label>
 {% endfor %}
 </td>
+<td>{{ form.group.errors }}</td>
+</tr>
+
+<tr>
+<td></td>
+<td>
+<div class="text-center">
+<input type="submit" value = "変更"/>
+</div>
+</td>
 </tr>
 </table>
 
-<input type="submit" value="変更"><br><br>
+<div class="pt-1">
 <input type="reset" value="入力内容をリセット">
+</div>
 </form>
 {% endblock %}

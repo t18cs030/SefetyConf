@@ -5,9 +5,28 @@
 {% block main %}
 <form action="{% url 'SafetyConf:AddGroup' %}" method="post">
 {% csrf_token %}
+<div class="pt-3">
+{{ form.groupId }}
+{{ form.groupId.errors }}
 <table>
-{{ form.as_table }}
+<tr>
+<td>{{ form.name.label_tag }}</td>
+<td>{{ form.name }}</td>
+<td>{{ form.name.errors }}</td>
+</tr>
+
+<tr>
+<td></td>
+<td>
+<div class="text-center">
+<div class="pt-3">
+<input type="submit" value="グループ追加">
+</div>
+</div>
+</td>
+</tr>
 </table>
-<input type="submit" value="変更">
+</div>
+
 </form>
 {% endblock %}
