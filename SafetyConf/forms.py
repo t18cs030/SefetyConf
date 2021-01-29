@@ -82,13 +82,12 @@ class TestForm(forms.ModelForm):
     
     class Meta:
         model = EmergencyContact
-        fields = ('emergencyContactId','title','text','deadline','sendDate')
+        fields = ('emergencyContactId','title','text','deadline')
         labels = {
             'emergencyContactId':'id',
             'title':'タイトル',
             'text':'内容',
-            'deadline':'期限',
-            'sendDate':'送信日'
+            'deadline':'期限'
             }
         
 class AnswerForm(forms.ModelForm):
