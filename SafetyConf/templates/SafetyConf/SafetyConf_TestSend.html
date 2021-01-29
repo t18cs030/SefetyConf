@@ -16,18 +16,6 @@
 <tr><td></td></tr>
 
 <tr>
-<td>{{ form.destinationGroup.label_tag }}</td>
-<td>
-{% for checkbox in form.destinationGroup %}
-    <label class="btn">
-    {{ checkbox.tag }} {{ checkbox.choice_label }}
-    </label>
-{% endfor %}
-</td>
-<td>{{ form.destinationGroup.errors }}</td>
-</tr>
-
-<tr>
 <td>{{ form.title.label_tag }}</td>
 <td>{{ form.title }}</td>
 <td>{{ form.title.errors }}</td>
