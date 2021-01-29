@@ -20,7 +20,7 @@
 			<th>期限</th>
 			<th>送信日時</th>
 			<th>宛先</th>
-			<th>解答<th>
+			<th>回答<th>
 
 		</tr>
 	</thead>
@@ -37,7 +37,7 @@
 {{ emer }}
 {% endfor %}
 </td>
-<td><a href="{% url 'SafetyConf:Result' EmergencyContact.emergencyContactId %}">解答リスト</a></td>
+<td><a href="{% url 'SafetyConf:Result' EmergencyContact.emergencyContactId %}">回答リスト</a></td>
 </tr>
 {% endfor %}
 </body>
