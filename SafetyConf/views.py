@@ -33,6 +33,9 @@ class AddView(LoginRequiredMixin,CreateView):
     form_class = EmployeeForm
     success_url = 'Index/'
     
+    def form_invalid(self, form):
+        return self.render_to_response(self.get_context_data(form=form))
+    
 class EmergencyListView(LoginRequiredMixin,ListView):
     template_name = "SafetyConf/SafetyConf_EmergencyList.html" 
     model = EmergencyContact
@@ -196,11 +199,15 @@ class ResultView(ListView):
         answers = Answer.objects.filter(emergencyContact=emergencycontact)
         employees = emergencycontact.getNoAnswerEmployees()
         if q_word:
+            try:
+                eid = int(q_word)
+            except ValueError:
+                eid = None
             ol = Answer.objects.filter(
-                Q(employee__employeeId=q_word,emergencyContact=emergencycontact) | Q(emergencyContact__title=q_word,emergencyContact=emergencycontact) )
+                Q(employee__name__contains=q_word,emergencyContact=emergencycontact) |  Q(employee__employeeId=eid,emergencyContact=emergencycontact) )
             object_list = list(set(ol))
             if not(object_list):
-                object_list=Employee.objects.filter(Q(employeeId=q_word))
+                object_list=Employee.objects.filter(Q(name__contains=q_word)|Q(employeeId=eid))
         else:
             object_list=list(emergencycontact.getNoAnswerEmployees())
             object_list += list(answers)
