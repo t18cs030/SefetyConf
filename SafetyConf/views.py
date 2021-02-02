@@ -196,7 +196,7 @@ class AnswerView(CreateView):
 class ThanksView(TemplateView):
     template_name = "SafetyConf/SafetyConf_Thanks.html"    
 
-class ResultView(ListView):
+class ResultView(LoginRequiredMixin,ListView):
     template_name = "SafetyConf/SafetyConf_Result.html"
     model = Answer
     
