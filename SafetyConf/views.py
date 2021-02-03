@@ -123,20 +123,28 @@ class TestSendView(LoginRequiredMixin,CreateView):
         group = Group.objects.all()
         self.object.destinationGroup.add(*group)
         from_email = settings.EMAIL_HOST_USER
-        for employee in employees: 
-            data = [employee.employeeId,int(id)]
-            m,code = encode_data(data)
-            context = {
-                        "name":employee.name,
-                        "employeeId":employee.employeeId,
-                        "deadline":self.object.deadline,
-                        "text":self.object.text,
-                        "m":m,
-                        "code":code.decode(),
-                        }
-            message = render_to_string('SafetyConf/mails/main.txt', context)
-            email = EmailMessage(subject,message, from_email, recipient_list)
-            email.send()
+        sent_list = []
+        for employee in employees:
+            recipient_list = []
+            if employee.mailaddress in sent_list:
+                continue 
+            else:
+                sent_list.append(employee.mailaddress) 
+                recipient_list.append(employee.mailaddress)
+                recipient_list.append(employee.subMailaddress) 
+                data = [employee.employeeId,int(id)]
+                m,code = encode_data(data)
+                context = {
+                            "name":employee.name,
+                            "employeeId":employee.employeeId,
+                            "deadline":self.object.deadline,
+                            "text":self.object.text,
+                            "m":m,
+                            "code":code.decode(),
+                            }
+                message = render_to_string('SafetyConf/mails/main.txt', context)
+                email = EmailMessage(subject,message, from_email, recipient_list)
+                email.send()
         return reverse_lazy('SafetyConf:Index')
     
 class AnswerView(CreateView):
@@ -269,7 +277,8 @@ def send(request,id):
             continue
         else:
             sent_list.append(employee.mailaddress) 
-            recipient_list.append(employee.mailaddress) 
+            recipient_list.append(employee.mailaddress)
+            recipient_list.append(employee.subMailaddress) 
             data = [employee.employeeId,int(id)]
             m,code = encode_data(data)
             context = {
