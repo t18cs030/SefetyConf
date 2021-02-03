@@ -78,7 +78,6 @@ class TestForm(forms.ModelForm):
     def __init__(self , *args , **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["emergencyContactId"].widget = forms.HiddenInput()
-        self.fields["sendDate"].widget = forms.HiddenInput()
     
     class Meta:
         model = EmergencyContact
